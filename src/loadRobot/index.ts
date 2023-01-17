@@ -1,0 +1,59 @@
+
+class EnvConfig {
+
+  #envConfig: Record<string, string> = {}
+
+  #proxyHandler = {
+    get(target: EnvConfig, propKey: string) {
+      return target.#envConfig[propKey]
+      // return Reflect.get(target, propKey)
+    }
+  }
+
+  static #permit = false
+
+
+  constructor(options: Record<string, any>, key: string = 'BIU_LIGHT_ENV_CONFIG') {
+    if (!EnvConfig.#permit) throw new Error("EnvConfig only supports instantiation through the static method 'createInstance' ")
+    // 初始化
+    this.#init(options)
+    // 挂载
+    // @ts-ignore
+    window[key] = new Proxy(this, this.#proxyHandler)
+    EnvConfig.#permit = false
+    // @ts-ignore
+    return window[key]
+  }
+
+
+  static createInstance(options: Record<string, any>, key = 'PAB_BANK_ENV_CONFIG') {
+    // @ts-ignore
+    if (window[key]) return window[key]
+    this.#permit = true
+    return new EnvConfig(options, key)
+  }
+
+  #init(options: Record<string, any>) {
+    const { hostname } = new URL(window.location.href)
+    this.#envConfig = options[hostname] || {}
+    console.log(import.meta, 'meta')
+    console.log(import.meta.url, '=====url====')
+    console.log(document.currentScript, 'document.currentScript')
+    console.log("this.#envConfig", this.#envConfig)
+  }
+
+  load(callback: (that: EnvConfig) => string) {
+    const url = callback(this)
+    let baseEle = document.createElement('base')
+    baseEle.href = url
+
+    const header = document.getElementsByTagName('head')[0]
+    header.insertBefore(baseEle, document.currentScript)
+  }
+}
+
+
+export default EnvConfig
+// export default EnvConfig.createInstance({
+//   ...process.env.DYNAMIC_ENV
+// })

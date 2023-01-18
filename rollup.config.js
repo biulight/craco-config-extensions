@@ -5,23 +5,36 @@ import commonjs from "@rollup/plugin-commonjs"
 import typescript from "@rollup/plugin-typescript"
 import babel from "@rollup/plugin-babel"
 
-// const path = require("path")
-// const alias = require("@rollup/plugin-alias")
-// const resolve = require("@rollup/plugin-node-resolve")
-// const commonjs = require("@rollup/plugin-commonjs")
-// const typescript = require("@rollup/plugin-typescript")
-// const babel = require("@rollup/plugin-babel")
-
-
 export default [
+  {
+    input: 'src/loadRobot/index.ts',
+    output: [
+      {
+        file: 'dist/loadRobot/index.esm.js',
+        format: "es"
+      }
+    ],
+    plugins: [
+      typescript(),
+      babel({
+        extensions: ['.js', '.ts'],
+        exclude: ["node_modules"],
+        "babelHelpers": "bundled"
+      })
+    ]
+  },
   {
     input: 'src/main.ts',
     output: [
       {
-        file: 'dist/index.cjs.js',
+        file: 'dist/index.cjs',
         format: 'cjs',
         minifyInternalExports: true
-      }
+      },
+      {
+        file: "dist/index.esm.js",
+        format: "es",
+      },
     ],
     plugins: [
       alias({
@@ -45,7 +58,8 @@ export default [
         exclude: ["node_modules"],
         "babelHelpers": "bundled"
       })
-    ]
+    ],
+    external: ["dotenv"]
 
   }
 ]

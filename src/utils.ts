@@ -1,6 +1,6 @@
 import path from "node:path"
 import fs, { PathLike } from "node:fs"
-import { Configuration } from "webpack"
+import type { Configuration } from "webpack"
 
 const appDirectory = fs.realpathSync(process.cwd())
 

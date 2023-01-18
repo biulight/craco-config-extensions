@@ -1,10 +1,17 @@
 {
   "name": "craco-config-extensions",
-  "version": "1.0.0",
-  "main": "index.js",
+  "version": "0.0.1-beta.0.1",
+  "main": "dist/index.cjs",
+  "module": "dist/index.esm.js",
   "type": "module",
   "repository": "git@biulight.github.com:biulight/craco-config-extensions.git",
   "author": "biulight <biulight007@gmail.com>",
+  "files": [
+    "dist",
+    "README.md",
+    "package.json",
+    "LICENSE"
+  ],
   "license": "MIT",
   "scripts": {
     "dev": "rollup --config rollup.config.js -w",
@@ -27,5 +34,8 @@
     "tslib": "^2.4.1",
     "typescript": "^4.9.4",
     "webpack": "^5.75.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3"
   }
 }

@@ -25,7 +25,9 @@ class EnvConfig {
     return window[key]
   }
 
-
+  /** 
+  * create instance
+  */
   static createInstance(options: Record<string, any>, key = 'PAB_BANK_ENV_CONFIG') {
     // @ts-ignore
     if (window[key]) return window[key]
@@ -41,14 +43,19 @@ class EnvConfig {
     console.log(document.currentScript, 'document.currentScript')
     console.log("this.#envConfig", this.#envConfig)
   }
-
-  load(callback: (that: EnvConfig) => string) {
+  /**
+  * load baseUrl by creating base element
+  *
+  */
+  load(callback: (that: EnvConfig) => string, success?: () => void) {
     const url = callback(this)
     let baseEle = document.createElement('base')
     baseEle.href = url
 
     const header = document.getElementsByTagName('head')[0]
-    header.insertBefore(baseEle, document.currentScript)
+    header.insertBefore(baseEle, document.currentScript!.nextElementSibling)
+    // load successfully
+    success && success()
   }
 }
 

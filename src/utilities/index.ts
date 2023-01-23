@@ -60,14 +60,6 @@ export const readAllDotenvFiles = (environments: string[], id = "") => {
     } else {
       return val
     }
-    // if (!key.startsWith('__')) return val
-    // const _key = key.replace(/^__[^_]+_/, '')
-    // if(!_key) return val
-    // this[_key] = val
-    // if (key.startsWith('__')) {
-    //   this[key.replace(`${id}_`, '')] = val
-    // }
-    // return val
   })
 }
 
@@ -81,9 +73,6 @@ export const stringifyVal = (target: Record<string, any>) => {
   }, {} as Record<string, string>)
 }
 
-// export const override = (...plugins: Function[]) => plugins.filter(f => f).reduce((pre, cur, idx) => {
-//   return (...args: any[]) => cur(pre(...args))
-// })
 /**
  * override configure by combine a list of function that used for modifing
  * */

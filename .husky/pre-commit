@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# npm test
 # echo "husky excute successfuy"
 npx lint-staged
+
+npm test

@@ -22,7 +22,6 @@
     "test": "cross-env NODE_ENV=test && jest -o --collectCoverage",
     "test:all": "cross-env NODE_ENV=test && jest --collectCoverage",
     "clean": "rimraf dist",
-    "commitlint": "commitlint --config commitlint.config.js",
     "prepare": "husky install",
     "prebuild": "npm run clean && npm run test:all"
   },

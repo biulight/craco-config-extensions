@@ -1,11 +1,11 @@
 import fs, { PathLike } from "node:fs"
 import { resolveApp } from "@/utils"
-import type { Configuration } from "webpack"
+// import type { Configuration } from "webpack"
+
 /**
  * read all env config file
  * */
 export const readAllDotenvFiles = (environments: string[], id = "") => {
-  const path = require("node:path")
   const dotenvCore = resolveApp(".env")
   // const dotenvFiles = environments.flat()
 
@@ -29,7 +29,6 @@ export const readAllDotenvFiles = (environments: string[], id = "") => {
     if (id) {
       let mark = dotenvData.raw[`${id}_KEY`] || environment
       delete dotenvData.raw[`${id}_KEY`]
-      // dotenvData[id] = { [mark]: {} }
       dotenvData[mark] = {}
 
       for (const [key, val] of Object.entries(dotenvData.raw)) {
@@ -38,12 +37,10 @@ export const readAllDotenvFiles = (environments: string[], id = "") => {
     }
 
     return dotenvData
-    // return { [environment]: dotenvData }
   }
 
   let allDotenvData: Record<string, any> = { raw: {} }
 
-  // let _id = id.startsWith('__') ? `${id}_${id.replaceAll('_', '')}` : id
   if (id) allDotenvData[id] = {}
 
   environments.forEach((environment) => {
@@ -79,7 +76,7 @@ export const stringifyVal = (target: Record<string, any>) => {
 export const override = (...plugins: Function[]) =>
   plugins
     .filter((f) => f)
-    .reduce((pre, cur, idx) => {
+    .reduce((pre, cur) => {
       return (webpackConfig: any, extra = {}) => {
         return cur(pre(webpackConfig, extra), extra)
       }

@@ -7,7 +7,7 @@ import { getWebpackPlugin, getType } from "../utils"
  */
 export const writeConfigForDebug =
   (filename: string) => (config: Configuration) => {
-    if (filename)
+    if (!filename)
       throw new Error("Function: writeConfigForDebug must has a parameter")
     const fs = require("node:fs")
     const path = require("node:path")

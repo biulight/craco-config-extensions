@@ -1,6 +1,6 @@
 {
   "name": "craco-config-extensions",
-  "version": "0.0.1-beta.0.4",
+  "version": "0.0.1-beta.0.7",
   "keywords": [
     "craco"
   ],
@@ -57,6 +57,7 @@
     "webpack": "^5.75.0"
   },
   "dependencies": {
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "html-webpack-plugin": "^5.5.0"
   }
 }

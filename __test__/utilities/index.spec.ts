@@ -1,4 +1,62 @@
-import { override } from "@/utilities"
+import fsPromises from "node:fs/promises"
+import { resolve } from "node:path"
+import { override, readAllDotenvFiles, readDotenvFiles } from "@/utilities"
+
+describe("readDotenvFiles", () => {
+  const mockFiles = async () => {
+    // 源文件读取
+    const path = resolve(__dirname, "__data__")
+    const dir = await fsPromises.readdir(path)
+
+    const linkFiles = new Set<string>()
+    // link 文件
+    for (const filename of dir) {
+      const linkFile = resolve(__dirname, "../../", filename)
+      linkFiles.add(linkFile)
+      try {
+        await fsPromises.access(linkFile)
+        throw new Error(`${linkFile} is exist!`)
+      } catch {}
+      const file = resolve(path, filename)
+      // console.log("filePath:", linkFile)
+      await fsPromises.symlink(file, linkFile)
+    }
+    return linkFiles
+  }
+
+  const removeMockFiles = async (linkFiles: Set<string>) => {
+    for (const linkFile of linkFiles) {
+      const stat = await fsPromises.lstat(linkFile)
+      // console.log(stat.isSymbolicLink() , '===')
+      if (stat.isSymbolicLink()) await fsPromises.unlink(linkFile)
+    }
+  }
+
+  it("read development", async () => {
+    const linkFiles = await mockFiles()
+
+    try {
+      const dotenvData = readAllDotenvFiles(["development"])
+
+      expect(dotenvData).toEqual({
+        raw: {
+          development: {
+            FLY_CDN: "",
+            KEY: "localhost",
+            ENV: "DEV",
+            DOMAIN_SERVER: "",
+            BIU_CDN: "//10.154.114.165/react-template-next/",
+            STATIC_DOMAIN: "//10.154.114.165/react-template-next/",
+          },
+        },
+      })
+    } catch (error) {
+      throw error
+    } finally {
+      await removeMockFiles(linkFiles)
+    }
+  })
+})
 
 describe("override", () => {
   const func1 = (val: number, extra: Record<string, number>) => {

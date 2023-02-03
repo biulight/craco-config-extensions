@@ -1,43 +1,78 @@
+export { default as HtmlWebpackInjectHead } from "./htmlWebpackInjectHead"
+
 import fs, { PathLike } from "node:fs"
 import { resolveApp } from "@/utils"
 // import type { Configuration } from "webpack"
 
 /**
- * read all env config file
- * */
-export const readAllDotenvFiles = (environments: string[], id = "") => {
+ * read env config file.the rule like create-react-env
+ */
+export const readDotenvFiles = (environment: string, id?: string) => {
   const dotenvCore = resolveApp(".env")
+  const dotenvFiles = [
+    `${dotenvCore}.${environment}.local`,
+    process.env.NODE_ENV !== "test" && `${dotenvCore}.local`,
+    `${dotenvCore}.${environment}`,
+    dotenvCore,
+  ].filter(Boolean)
+
+  let dotenvData: Record<string, any> = { raw: {} }
+
+  dotenvFiles.forEach((dotenvFile) => {
+    if (fs.existsSync(dotenvFile as PathLike)) {
+      const { parsed } = require("dotenv").config({ path: dotenvFile })
+      Object.assign(dotenvData.raw, parsed)
+    }
+  })
+
+  if (id) {
+    let mark = dotenvData.raw[`${id}_KEY`] || environment
+    delete dotenvData.raw[`${id}_KEY`]
+    dotenvData[mark] = {}
+
+    for (const [key, val] of Object.entries(dotenvData.raw)) {
+      if (key.startsWith(id)) dotenvData[mark][key] = val
+    }
+  }
+
+  return dotenvData
+}
+/**
+ * read all env config file
+ */
+export const readAllDotenvFiles = (environments: string[], id = "") => {
+  // const dotenvCore = resolveApp(".env")
   // const dotenvFiles = environments.flat()
 
-  const readDotenvFiles = (environment: string, id: string) => {
-    const dotenvFiles = [
-      `${dotenvCore}.${environment}.local`,
-      process.env.NODE_ENV !== "test" && `${dotenvCore}.local`,
-      `${dotenvCore}.${environment}`,
-      dotenvCore,
-    ].filter(Boolean)
+  // const readDotenvFiles = (environment: string, id: string) => {
+  //   const dotenvFiles = [
+  //     `${dotenvCore}.${environment}.local`,
+  //     process.env.NODE_ENV !== "test" && `${dotenvCore}.local`,
+  //     `${dotenvCore}.${environment}`,
+  //     dotenvCore,
+  //   ].filter(Boolean)
 
-    let dotenvData: Record<string, any> = { raw: {} }
+  //   let dotenvData: Record<string, any> = { raw: {} }
 
-    dotenvFiles.forEach((dotenvFile) => {
-      if (fs.existsSync(dotenvFile as PathLike)) {
-        const { parsed } = require("dotenv").config({ path: dotenvFile })
-        Object.assign(dotenvData.raw, parsed)
-      }
-    })
+  //   dotenvFiles.forEach((dotenvFile) => {
+  //     if (fs.existsSync(dotenvFile as PathLike)) {
+  //       const { parsed } = require("dotenv").config({ path: dotenvFile })
+  //       Object.assign(dotenvData.raw, parsed)
+  //     }
+  //   })
 
-    if (id) {
-      let mark = dotenvData.raw[`${id}_KEY`] || environment
-      delete dotenvData.raw[`${id}_KEY`]
-      dotenvData[mark] = {}
+  //   if (id) {
+  //     let mark = dotenvData.raw[`${id}_KEY`] || environment
+  //     delete dotenvData.raw[`${id}_KEY`]
+  //     dotenvData[mark] = {}
 
-      for (const [key, val] of Object.entries(dotenvData.raw)) {
-        if (key.startsWith(id)) dotenvData[mark][key] = val
-      }
-    }
+  //     for (const [key, val] of Object.entries(dotenvData.raw)) {
+  //       if (key.startsWith(id)) dotenvData[mark][key] = val
+  //     }
+  //   }
 
-    return dotenvData
-  }
+  //   return dotenvData
+  // }
 
   let allDotenvData: Record<string, any> = { raw: {} }
 
@@ -73,11 +108,9 @@ export const stringifyVal = (target: Record<string, any>) => {
 /**
  * override configure by combine a list of function that used for modifing
  * */
-export const override = (...plugins: Function[]) =>
-  plugins
-    .filter((f) => f)
-    .reduce((pre, cur) => {
-      return (webpackConfig: any, extra = {}) => {
-        return cur(pre(webpackConfig, extra), extra)
-      }
-    })
+export const override = (...plugins: (Function | false)[]) =>
+  (plugins.filter((f) => f) as Function[]).reduce((pre, cur) => {
+    return (webpackConfig: any, extra = {}) => {
+      return cur(pre(webpackConfig, extra), extra)
+    }
+  })

@@ -34,14 +34,27 @@ export const addDefinitionsEnvValue =
     return config
   }
 
-export const addHtmlWebpackPlugin = (value: any) => (config: Configuration) => {
-  const plugin = getWebpackPlugin(config.plugins, "HtmlWebpackPlugin")
-  if (!plugin) throw new Error("HtmlWebpackPlugin don't exist!")
+export const addHtmlWebpackPlugin =
+  (value: any, id: number) => (config: Configuration) => {
+    const plugin = getWebpackPlugin(config.plugins, "HtmlWebpackPlugin", id)
+    if (!plugin) throw new Error("HtmlWebpackPlugin don't exist!")
+    Object.assign(plugin, value)
 
-  console.log(plugin, "htmlwebpackplugin")
-  // const
-  return config
-}
+    console.log(plugin, "htmlwebpackplugin")
+    // const
+    return config
+  }
+
+export const addInterpolateHtmlPlugin =
+  (value: any) => (config: Configuration) => {
+    const plugin = getWebpackPlugin(config.plugins, "InterpolateHtmlPlugin")
+    if (!plugin) throw new Error("InterpolateHtmlPlugin don't exist!")
+    // const { replacements = {}, ...rest } = value
+    Object.assign(plugin?.replacements, value)
+    // Object.assign(plugin, rest)
+
+    return config
+  }
 
 /** modify output config */
 export const modifyOutputConfig =

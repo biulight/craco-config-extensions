@@ -5,6 +5,8 @@ import commonjs from "@rollup/plugin-commonjs"
 import typescript from "@rollup/plugin-typescript"
 import babel from "@rollup/plugin-babel"
 
+const isDevelopment = process.env.NODE_ENV === 'development'
+
 export default [
   {
     input: 'src/loadRobot/index.ts',
@@ -12,6 +14,13 @@ export default [
       {
         file: 'dist/loadRobot/index.js',
         format: "es"
+      },
+      {
+      name: '_BIU_LOAD_ENV',
+      file: 'dist/loadRobot/index.umd.js',
+      format: 'umd',
+      sourcemap: isDevelopment,
+      minifyInternalExports: true,
       }
     ],
     plugins: [
@@ -48,10 +57,10 @@ export default [
       //     moduleDirectory: "node_modules"
       //   }
       // }),
-      resolve(),
       commonjs({
         include: "node_modules"
       }),
+      resolve(),
       typescript(),
       babel({
         extensions: ['.js', '.ts'],
@@ -59,7 +68,6 @@ export default [
         "babelHelpers": "bundled"
       })
     ],
-    external: ["dotenv"]
-
+    external: ["dotenv", "html-webpack-plugin"]
   }
 ]

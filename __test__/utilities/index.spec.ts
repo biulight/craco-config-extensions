@@ -2,37 +2,106 @@ import fsPromises from "node:fs/promises"
 import { resolve } from "node:path"
 import { override, readAllDotenvFiles, readDotenvFiles } from "@/utilities"
 
+const mockFiles = async () => {
+  // 源文件读取
+  const path = resolve(__dirname, "__data__")
+  const dir = await fsPromises.readdir(path)
+
+  const linkFiles = new Set<string>()
+  // link 文件
+  for (const filename of dir) {
+    const linkFile = resolve(__dirname, "../../", filename)
+    linkFiles.add(linkFile)
+    try {
+      await fsPromises.access(linkFile)
+      throw new Error(`${linkFile} is exist!`)
+    } catch {}
+    const file = resolve(path, filename)
+    // console.log("filePath:", linkFile)
+    await fsPromises.symlink(file, linkFile)
+  }
+  return linkFiles
+}
+
+const removeMockFiles = async (linkFiles: Set<string>) => {
+  for (const linkFile of linkFiles) {
+    const stat = await fsPromises.lstat(linkFile)
+    // console.log(stat.isSymbolicLink() , '===')
+    if (stat.isSymbolicLink()) await fsPromises.unlink(linkFile)
+  }
+}
+
 describe("readDotenvFiles", () => {
-  const mockFiles = async () => {
-    // 源文件读取
-    const path = resolve(__dirname, "__data__")
-    const dir = await fsPromises.readdir(path)
+  it("read development while id is exist", async () => {
+    const linkFiles = await mockFiles()
 
-    const linkFiles = new Set<string>()
-    // link 文件
-    for (const filename of dir) {
-      const linkFile = resolve(__dirname, "../../", filename)
-      linkFiles.add(linkFile)
-      try {
-        await fsPromises.access(linkFile)
-        throw new Error(`${linkFile} is exist!`)
-      } catch {}
-      const file = resolve(path, filename)
-      // console.log("filePath:", linkFile)
-      await fsPromises.symlink(file, linkFile)
+    try {
+      const dotenvData = readDotenvFiles("development", "__DYNAMIC")
+
+      expect(dotenvData).toEqual({
+        localhost: {
+          ENV: "DEV",
+          DOMAIN_SERVER: "",
+          BIU_CDN: "//10.154.114.165/react-template-next/",
+          STATIC_DOMAIN: "//10.154.114.165/react-template-next/",
+        },
+      })
+    } catch (error) {
+      throw error
+    } finally {
+      await removeMockFiles(linkFiles)
     }
-    return linkFiles
-  }
+  })
 
-  const removeMockFiles = async (linkFiles: Set<string>) => {
-    for (const linkFile of linkFiles) {
-      const stat = await fsPromises.lstat(linkFile)
-      // console.log(stat.isSymbolicLink() , '===')
-      if (stat.isSymbolicLink()) await fsPromises.unlink(linkFile)
+  it("read development while id isn't exist", async () => {
+    const linkFiles = await mockFiles()
+
+    try {
+      const dotenvData = readDotenvFiles("development")
+
+      expect(dotenvData).toEqual({
+        raw: {
+          __DYNAMIC_KEY: "localhost",
+          __DYNAMIC_ENV: "DEV",
+          __DYNAMIC_DOMAIN_SERVER: "",
+          __DYNAMIC_BIU_CDN: "//10.154.114.165/react-template-next/",
+          __DYNAMIC_STATIC_DOMAIN: "//10.154.114.165/react-template-next/",
+          FLY_CDN: "",
+        },
+      })
+    } catch (error) {
+      throw error
+    } finally {
+      await removeMockFiles(linkFiles)
     }
-  }
+  })
+})
 
-  it("read development", async () => {
+describe("readAllDotenvFiles", () => {
+  it("read development while id is exist!", async () => {
+    const linkFiles = await mockFiles()
+
+    try {
+      const dotenvData = readAllDotenvFiles(["development"], "__DYNAMIC")
+
+      expect(dotenvData).toEqual({
+        __DYNAMIC: {
+          localhost: {
+            ENV: "DEV",
+            DOMAIN_SERVER: "",
+            BIU_CDN: "//10.154.114.165/react-template-next/",
+            STATIC_DOMAIN: "//10.154.114.165/react-template-next/",
+          },
+        },
+      })
+    } catch (error) {
+      throw error
+    } finally {
+      await removeMockFiles(linkFiles)
+    }
+  })
+
+  it("read development while id isn't exist!", async () => {
     const linkFiles = await mockFiles()
 
     try {

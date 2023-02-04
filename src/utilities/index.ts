@@ -20,7 +20,11 @@ export const readDotenvFiles = (environment: string, id?: string) => {
 
   dotenvFiles.forEach((dotenvFile) => {
     if (fs.existsSync(dotenvFile as PathLike)) {
-      const { parsed } = require("dotenv").config({ path: dotenvFile })
+      // const { parsed } = require("dotenv").parse({ path: dotenvFile })
+      // fs.readFileSync(dotenvFile as string)
+      const parsed = require("dotenv").parse(
+        fs.readFileSync(dotenvFile as string)
+      )
       Object.assign(dotenvData.raw, parsed)
     }
   })
@@ -31,8 +35,9 @@ export const readDotenvFiles = (environment: string, id?: string) => {
     dotenvData[mark] = {}
 
     for (const [key, val] of Object.entries(dotenvData.raw)) {
-      if (key.startsWith(id)) dotenvData[mark][key] = val
+      if (key.startsWith(id)) dotenvData[mark][key.slice(id.length + 1)] = val
     }
+    delete dotenvData.raw
   }
 
   return dotenvData
@@ -81,10 +86,12 @@ export const readAllDotenvFiles = (environments: string[], id = "") => {
   environments.forEach((environment) => {
     const { raw, ...rest } = readDotenvFiles(environment, id)
 
-    Object.assign(allDotenvData.raw, { [environment]: raw })
+    raw && Object.assign(allDotenvData.raw, { [environment]: raw })
 
     id && Object.assign(allDotenvData[id], rest)
   })
+
+  if (JSON.stringify(allDotenvData.raw) === "{}") delete allDotenvData.raw
 
   return JSON.parse(JSON.stringify(allDotenvData), function (key, val) {
     if (key.startsWith("__") && key !== id) {

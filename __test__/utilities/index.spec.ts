@@ -41,9 +41,9 @@ describe("readDotenvFiles", () => {
       expect(dotenvData).toEqual({
         localhost: {
           ENV: "DEV",
-          DOMAIN_SERVER: "",
-          BIU_CDN: "//10.154.114.165/react-template-next/",
-          STATIC_DOMAIN: "//10.154.114.165/react-template-next/",
+          DOMAIN_SERVER: "//dev.server.example.com",
+          BIU_CDN: "//dev.cdn.biu.com",
+          STATIC_DOMAIN: "//dev.cdn.example.com",
         },
       })
     } catch (error) {
@@ -63,9 +63,9 @@ describe("readDotenvFiles", () => {
         raw: {
           __DYNAMIC_KEY: "localhost",
           __DYNAMIC_ENV: "DEV",
-          __DYNAMIC_DOMAIN_SERVER: "",
-          __DYNAMIC_BIU_CDN: "//10.154.114.165/react-template-next/",
-          __DYNAMIC_STATIC_DOMAIN: "//10.154.114.165/react-template-next/",
+          __DYNAMIC_DOMAIN_SERVER: "//dev.server.example.com",
+          __DYNAMIC_BIU_CDN: "//dev.cdn.biu.com",
+          __DYNAMIC_STATIC_DOMAIN: "//dev.cdn.example.com",
           FLY_CDN: "",
         },
       })
@@ -88,9 +88,9 @@ describe("readAllDotenvFiles", () => {
         __DYNAMIC: {
           localhost: {
             ENV: "DEV",
-            DOMAIN_SERVER: "",
-            BIU_CDN: "//10.154.114.165/react-template-next/",
-            STATIC_DOMAIN: "//10.154.114.165/react-template-next/",
+            DOMAIN_SERVER: "//dev.server.example.com",
+            BIU_CDN: "//dev.cdn.biu.com",
+            STATIC_DOMAIN: "//dev.cdn.example.com",
           },
         },
       })
@@ -113,9 +113,9 @@ describe("readAllDotenvFiles", () => {
             FLY_CDN: "",
             KEY: "localhost",
             ENV: "DEV",
-            DOMAIN_SERVER: "",
-            BIU_CDN: "//10.154.114.165/react-template-next/",
-            STATIC_DOMAIN: "//10.154.114.165/react-template-next/",
+            DOMAIN_SERVER: "//dev.server.example.com",
+            BIU_CDN: "//dev.cdn.biu.com",
+            STATIC_DOMAIN: "//dev.cdn.example.com",
           },
         },
       })

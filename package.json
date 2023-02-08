@@ -1,6 +1,6 @@
 {
-  "name": "craco-config-extensions",
-  "version": "0.0.1",
+  "name": "@biulight/craco-config-extensions",
+  "version": "0.0.2",
   "keywords": [
     "craco"
   ],

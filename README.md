@@ -1,7 +1,6 @@
-# craco-config-extensions
+# @biulight/craco-config-extensions
 
-> 用于快速配置 craco.config.js 文件
-> 支持基于访问域名动态映射静态资源加载域名
+> 用于快速配置 craco.config.js 文件，支持基于访问域名动态映射静态资源加载域名
 
 ## Requirements
 
@@ -11,12 +10,12 @@
 
 ```bash
 
-npm install craco-config-extensions --save-dev
+npm install @biulight/craco-config-extensions --save-dev
 
 ```
 
 ```bash
-yarn add --dev craco-config-extensions
+yarn add --dev @biulight/craco-config-extensions
 ```
 
 ## Usage
@@ -47,7 +46,7 @@ yarn add --dev craco-config-extensions
 #### `override`函数
 
 ```js
-const { override } = require("craco-config-extensions")
+const { override } = require("@biulight/craco-config-extensions")
 
 module.exports = {
   webpack: {
@@ -59,7 +58,7 @@ module.exports = {
 #### 在 html 模板 head 标签里注入资源
 
 ```js
-const { HtmlWebpackInjectHead } = require("craco-config-extensions")
+const { HtmlWebpackInjectHead } = require("@biulight/craco-config-extensions")
 
 module.exports = {
   webpack: {
@@ -91,7 +90,7 @@ __DYNAMIC_STATIC_DOMAIN=production.cdn.example.com
 ```
 
 ```js
-const { readAllDotenvFiles } = require("craco-config-extensions")
+const { readAllDotenvFiles } = require("@biulight/craco-config-extensions")
 
 // 读取.env.production, .env.develpment, .env.stg 等文件
 const { __DYNAMIC: DYNAMIC_ENV } = readAllDotenvFiles(
@@ -112,7 +111,7 @@ DYNAMIC_ENV:
 #### 动态映射域名
 
 ```js
-import CracoEnv from "craco-config-extensions/dist/loadRobot"
+import CracoEnv from "@biulight/craco-config-extensions/dist/loadRobot"
 
 // 创建
 const envInstance = CracoEnv.createInstance({
@@ -141,7 +140,7 @@ const server = envInstance.DOMAIN_SERVER
 ```js
 // 编辑craco.config.js文件
 const CopyWebpackPlugin = require("copy-webpack-plugin")
-const { HtmlWebpackInjectHead } = require("craco-config-extensions")
+const { HtmlWebpackInjectHead } = require("@biulight/craco-config-extensions")
 
 module.exports = {
   webpack: {
@@ -151,7 +150,7 @@ module.exports = {
         new CopyWebpackPlugin({
           patterns: [
             {
-              from: "node_modules/craco-config-extensions/dist/loadRobot/index.umd.js",
+              from: "node_modules/@biulight/craco-config-extensions/dist/loadRobot/index.umd.js",
               to: "preload.worker.js",
             },
           ],

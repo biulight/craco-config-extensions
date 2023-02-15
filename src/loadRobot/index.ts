@@ -48,10 +48,10 @@ class EnvConfig {
     this.#envConfig = options[hostname] || {}
     const staticDomain = this.#envConfig["STATIC_DOMAIN"]
     this.createBase(staticDomain)
-    console.log(import.meta, "meta>>>211>>>info")
-    console.log(import.meta.url, "=====url====")
-    console.log(document.currentScript, "document.currentScript")
-    console.log("this.#envConfig", this.#envConfig)
+    // console.log(import.meta, "meta>>>211>>>info")
+    // console.log(import.meta.url, "=====url====")
+    // console.log(document.currentScript, "document.currentScript")
+    // console.log("this.#envConfig", this.#envConfig)
   }
   /**
    * load baseUrl by creating base element

@@ -13,7 +13,16 @@ export const writeConfigForDebug =
     const path = require("node:path")
     fs.writeFileSync(
       path.join(process.cwd(), filename),
-      JSON.stringify(config, undefined, 2)
+      JSON.stringify(
+        config,
+        (key, val) => {
+          if (Object.prototype.toString.call(val) === "[object RegExp]") {
+            return val.toString()
+          }
+          return val
+        },
+        2
+      )
     )
     return config
   }

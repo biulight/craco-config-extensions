@@ -105,7 +105,7 @@ DYNAMIC_ENV:
 
 ##### 注意事项
 
-- `__DYNAMIC_KEY`会被忽略，只用来指定 html 域名
+- `__DYNAMIC_KEY`会被忽略，只用来指定 html 文件资源域名
 - `__DYNAMIC_STATIC_DOMAIN`: 当与`loadRobot`类结合使用时，会自动创建`base`标签，并把 href 指向它的值
 
 #### 动态映射域名

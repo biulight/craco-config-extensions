@@ -189,3 +189,36 @@ module.exports = {
   _BIU_LOAD_ENV.createInstance(JSON.parse("%DYNAMIC_ENV%"))
 </script>
 ```
+
+4. 禁用`HtmlWebpackPlugin`插件自动注入功能，手动加载资源
+
+  - 修改`html-webpack-plugin`
+  ```js
+  // 编辑craco.config.js
+  const HtmlWebpackPlugin = require("html-webpack-plugin")
+  module.exports = {
+    webpack: {
+      plugins: {
+        add: [
+          new HtmlWebpackPlugin({
+            ...
+            inject: false, // disable automatic injections
+          })
+        ]
+      }
+    }
+  }
+  ```
+
+  - 修改`html`模板，动态加载资源
+
+  ```html
+  <head>
+    <!-- 插入如下代码 -->
+    <%= "<script>" %>
+      _BIU_LOAD_ENV.load([..."<%= htmlWebpackPlugin.files.css %>,<%= htmlWebpackPlugin.files.js %>".split(",")])
+    <%= "</script>" %>
+  </head>
+  ```
+  `inject: false` 示例，参考[html-webpack-plugin](https://github.com/jantimon/html-webpack-plugin/tree/main/examples/custom-insertion-position)
+  模板语法参考[EJS](https://ejs.co/#docs) 

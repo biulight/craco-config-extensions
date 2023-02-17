@@ -1,6 +1,7 @@
 {
   "name": "@biulight/craco-config-extensions",
-  "version": "0.0.3",
+  "version": "0.1.2",
+  "description": "简化craco配置，支持动态加载打包产物",
   "keywords": [
     "craco"
   ],
@@ -23,7 +24,9 @@
     "test:all": "cross-env NODE_ENV=test && jest --collectCoverage",
     "clean": "rimraf dist",
     "prepare": "husky install",
-    "prebuild": "npm run clean && npm run test:all"
+    "prebuild": "npm run clean && npm run test:all",
+    "prepublishOnly": "npm run build",
+    "deploy": "npm publish --access public"
   },
   "lint-staged": {
     "./{src,__test__}/**/*.ts|./*.{json,md}": [

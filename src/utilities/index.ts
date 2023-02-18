@@ -1,4 +1,5 @@
 export { default as HtmlWebpackInjectHead } from "./htmlWebpackInjectHead"
+export { default as HtmlWebpackMixinRobot } from "./htmlWebpackMixinRobot"
 
 import fs, { PathLike } from "node:fs"
 import { resolveApp } from "@/utils"

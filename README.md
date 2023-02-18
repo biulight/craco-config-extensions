@@ -77,7 +77,7 @@ module.exports = {
 
 #### 读取指定`.env`文件中指定前缀配置
 
-> 文件读取规则等价于`create-react-app`
+> 文件读取规则等同于`create-react-app`脚手架中读取`.env`
 
 .env.production
 
@@ -106,7 +106,7 @@ DYNAMIC_ENV:
 ##### 注意事项
 
 - `__DYNAMIC_KEY`会被忽略，只用来指定 html 文件资源域名
-- `__DYNAMIC_STATIC_DOMAIN`: 当与`loadRobot`类结合使用时，会自动创建`base`标签，并把 href 指向它的值
+- `__DYNAMIC_STATIC_DOMAIN`: 当与`loadRobot`结合使用时，会自动创建`base`标签，并把 href 指向它的值
 
 #### 动态映射域名
 
@@ -134,6 +134,8 @@ const server = envInstance.DOMAIN_SERVER
 #### 动态加载指定域名静态资源
 
 > 依托`html`文件域名，动态加载指定 cdn 静态资源
+
+##### 方案一(旧方案)
 
 1. 使用 loadRobot 类的 umd 文件,提供全局变量`_BIU_LOAD_ENV`
 
@@ -190,7 +192,7 @@ module.exports = {
 </script>
 ```
 
-4. 禁用`HtmlWebpackPlugin`插件自动注入功能，手动加载资源
+4. 禁用`HtmlWebpackPlugin`插件将生成的 `webpack` 文件添加到资产
 
   - 修改`html-webpack-plugin`
   ```js
@@ -222,3 +224,63 @@ module.exports = {
   ```
   `inject: false` 示例，参考[html-webpack-plugin](https://github.com/jantimon/html-webpack-plugin/tree/main/examples/custom-insertion-position)
   模板语法参考[EJS](https://ejs.co/#docs) 
+
+##### 新方案
+
+> 使用`HtmlWebpackMixinRobot`插件
+
+修改`craco.config.js` 插件
+
+1. 禁用`HtmlWebpackPlugin`插件将生成的 `webpack` 文件添加到资产
+
+  - 修改`html-webpack-plugin`
+  ```js
+  // 编辑craco.config.js
+  const HtmlWebpackPlugin = require("html-webpack-plugin")
+  module.exports = {
+    webpack: {
+      plugins: {
+        add: [
+          new HtmlWebpackPlugin({
+            ...
+            inject: false, // disable automatic injections
+            scriptLoading: "blocking", // 动态创建`script`标签时，`defer` 属性不生效
+          })
+        ]
+      }
+    }
+  }
+  ```
+
+2. 使用`HtmlWebpackMixinRobot`插件动态创建`base`标签并添加资产
+
+```js
+const CopyWebpackPlugin = require("copy-webpack-plugin")
+const { HtmlWebpackMixinRobot } = require("@biulight/craco-config-extensions")
+
+module.exports = {
+  webpack: {
+    plugins: {
+      add: [
+        // 复制文件到打包产物目录
+        new CopyWebpackPlugin({
+          patterns: [
+            {
+              from: "node_modules/@biulight/craco-config-extensions/dist/loadRobot/index.umd.js",
+              to: "preload.worker.js",
+            },
+          ],
+        }),
+        // js创建标签，添加 `webpack` bundle 
+        new HtmlWebpackMixinRobot(HtmlWebpackPlugin, { 
+          env: JSON.stringify(DYNAMIC_ENV), // 可选，
+          robotUrl: "preload.worker.js" // 可选, 当`robotUrl`和`env`同时存在，会实例化`loadRobot`类
+        })
+      ]
+    }
+  }
+}
+
+```
+`DYNAMIC_ENV`: 详见[读取指定`.env`文件中指定前缀配置](#读取指定`.env`文件中指定前缀配置)
+

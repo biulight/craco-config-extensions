@@ -1,3 +1,23 @@
+import type { HtmlTagObject } from "html-webpack-plugin"
+
+interface HtmlAttributes {
+  [attributeName: string]: string | boolean | null | undefined
+}
+
+function createTag(
+  tagName: string,
+  attributes: HtmlAttributes,
+  position?: string
+) {
+  const tag = document.createElement(tagName)
+  for (const key in attributes) {
+    if (!attributes.hasOwnProperty(key)) continue
+    tag.setAttribute(key, attributes[key] as string)
+  }
+  position && document.getElementsByTagName(position)[0].appendChild(tag)
+  return tag
+}
+
 class LoadRobot {
   #envConfig: Record<string, string> = {}
   #outlet = ["load"]
@@ -48,10 +68,6 @@ class LoadRobot {
     this.#envConfig = options[hostname] || {}
     const staticDomain = this.#envConfig["STATIC_DOMAIN"]
     this.createBase(staticDomain)
-    // console.log(import.meta, "meta>>>211>>>info")
-    // console.log(import.meta.url, "=====url====")
-    // console.log(document.currentScript, "document.currentScript")
-    // console.log("this.#envConfig", this.#envConfig)
   }
   /**
    * load baseUrl by creating base element
@@ -77,6 +93,18 @@ class LoadRobot {
       if (url.endsWith(".js")) LoadRobot.createScript(url)
       if (url.endsWith(".css")) LoadRobot.createLink(url)
     }
+  }
+
+  /**
+   * load Webpack Resource
+   */
+  static loadOrigin(tags: HtmlTagObject[], position: string) {
+    const fragment = document.createDocumentFragment()
+    for (const tag of tags) {
+      const { tagName, attributes } = tag
+      fragment.appendChild(createTag(tagName, attributes))
+    }
+    document.getElementsByTagName(position)[0].appendChild(fragment)
   }
 
   static createScript(url: string, callback?: Function) {

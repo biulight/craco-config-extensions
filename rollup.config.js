@@ -16,7 +16,7 @@ export default [
         format: "es"
       },
       {
-      name: '_BIU_LOAD_ENV',
+      name: '_BIU_LOAD_ROBOT',
       file: 'dist/loadRobot/index.umd.js',
       format: 'umd',
       sourcemap: isDevelopment,

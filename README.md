@@ -22,13 +22,33 @@ yarn add --dev @biulight/craco-config-extensions
 
 ### 功能
 
+#### 钩子函数
 
-#### `modifyOutputConfig`
+> 修改`webpack`配置的钩子函数
+
+
+##### `modifyOutputConfig`
 
 修改`webpack`的`output`配置
 
+##### `addInterpolateHtmlPlugin`
+
+修改`DefinePlugin`插件
+
+##### `addInterpolateHtmlPlugin`
+
+修改`create-react-app`内置的`InterpolateHtmlPlugin`插件
+
+##### `addSplitChunksPlugin`
+
+修改`webpack`的`Optimization.splitChunks`
+
 
 #### Plugin
+
+##### `HtmlWebpackInjectHead`
+
+##### `HtmlWebpackMixinRobot`
 
 
 #### 工具函数
@@ -36,9 +56,14 @@ yarn add --dev @biulight/craco-config-extensions
 ##### `override`
 
 高阶函数，支持配置函数链式调用
+
 ##### `stringifyVal`
 
 将对象中value转换成JSON字符串
+
+##### `readAllDotenvFiles`
+
+读取指定`.env`文件中指定前缀的变量
 
 
 ### 示例

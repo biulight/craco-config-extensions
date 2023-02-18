@@ -299,7 +299,8 @@ module.exports = {
         // js创建标签，添加 `webpack` bundle 
         new HtmlWebpackMixinRobot(HtmlWebpackPlugin, { 
           env: JSON.stringify(DYNAMIC_ENV), // 可选，
-          robotUrl: "preload.worker.js" // 可选, 当`robotUrl`和`env`同时存在，会实例化`loadRobot`类
+          robotUrl: "preload.worker.js", // 可选, 当`robotUrl`和`env`同时存在，会实例化`loadRobot`类
+          robotInstance: "BIU_BIU", // 可选，挂载在`global`对象上key，默认值`BIU_LIGHT_ROBOT_INSTANCE`
         })
       ]
     }

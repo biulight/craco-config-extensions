@@ -6,6 +6,7 @@ import { insertStringBefore, insertStringAfter } from "@/utils"
 
 interface Options {
   robot?: string
+  robotInstance?: string
   robotUrl?: string
   env?: string
 }
@@ -64,7 +65,7 @@ export default class HtmlWebpackMixinRobot {
           )
           // 动态创建base标签
           if (this.options.env && this.options.robotUrl) {
-            const str = `<script src="${this.options.robotUrl}"></script><script>${this.options.robot}.createInstance(${this.options.env})</script>`
+            const str = `<script src="${this.options.robotUrl}"></script><script>${this.options.robot}.createInstance(${this.options.env}, "${this.options.robotInstance}")</script>`
             data.html = insertStringAfter(data.html, "<head>", str)
           }
 

@@ -20,11 +20,13 @@ function createTag(
 
 class LoadRobot {
   #envConfig: Record<string, string> = {}
-  #outlet = ["load"]
+  #outlet = ["getEnvConfig"]
 
   #proxyHandler = {
-    get(target: LoadRobot, propKey: string) {
-      if (target.#outlet.includes(propKey)) return Reflect.get(target, propKey)
+    get(target: LoadRobot, propKey: string, receiver: LoadRobot) {
+      // if (target.#outlet.includes(propKey)) return Reflect.get(target, propKey, receiver)
+      if (target.#outlet.includes(propKey))
+        return Reflect.get(target, propKey).bind(target)
       return target.#envConfig[propKey]
       // return Reflect.get(target, propKey)
     },
@@ -34,7 +36,7 @@ class LoadRobot {
 
   constructor(
     options: Record<string, any>,
-    key: string = "BIU_LIGHT_ENV_CONFIG"
+    key: string = "BIU_LIGHT_ROBOT_INSTANCE"
   ) {
     if (!LoadRobot.#permit)
       throw new Error(
@@ -55,7 +57,7 @@ class LoadRobot {
    */
   static createInstance(
     options: Record<string, any>,
-    key = "PAB_BANK_ENV_CONFIG"
+    key = "BIU_LIGHT_ROBOT_INSTANCE"
   ) {
     // @ts-ignore
     if (window[key]) return window[key]
@@ -68,6 +70,10 @@ class LoadRobot {
     this.#envConfig = options[hostname] || {}
     const staticDomain = this.#envConfig["STATIC_DOMAIN"]
     this.createBase(staticDomain)
+  }
+
+  public getEnvConfig() {
+    return this.#envConfig
   }
   /**
    * load baseUrl by creating base element

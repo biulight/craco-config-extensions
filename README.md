@@ -137,7 +137,7 @@ const server = envInstance.DOMAIN_SERVER
 
 ##### 方案一(旧方案)
 
-1. 使用 loadRobot 类的 umd 文件,提供全局变量`_BIU_LOAD_ENV`
+1. 使用 loadRobot 类的 umd 文件,提供全局变量`_BIU_LOAD_ROBOT`
 
 ```js
 // 编辑craco.config.js文件
@@ -188,7 +188,7 @@ module.exports = {
 ```html
 <!-- head头部加入实例化loadRobot逻辑 -->
 <script>
-  _BIU_LOAD_ENV.createInstance(JSON.parse("%DYNAMIC_ENV%"))
+  _BIU_LOAD_ROBOT.createInstance(JSON.parse("%DYNAMIC_ENV%"))
 </script>
 ```
 
@@ -218,7 +218,7 @@ module.exports = {
   <head>
     <!-- 插入如下代码 -->
     <%= "<script>" %>
-      _BIU_LOAD_ENV.load([..."<%= htmlWebpackPlugin.files.css %>,<%= htmlWebpackPlugin.files.js %>".split(",")])
+      _BIU_LOAD_ROBOT.load([..."<%= htmlWebpackPlugin.files.css %>,<%= htmlWebpackPlugin.files.js %>".split(",")])
     <%= "</script>" %>
   </head>
   ```

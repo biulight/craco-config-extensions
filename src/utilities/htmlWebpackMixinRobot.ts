@@ -48,21 +48,21 @@ export default class HtmlWebpackMixinRobot {
       this.htmlWebpackPlugin
         .getHooks(compilation)
         .afterTemplateExecution.tap("HtmlWebpackMixinRobot", (data) => {
-          const fs = require("node:fs")
-          const path = require("node:path")
-          fs.writeFileSync(
-            path.join(process.cwd(), "__HtmlWebpackMixinRobot"),
-            JSON.stringify(
-              data,
-              (key, val) => {
-                if (Object.prototype.toString.call(val) === "[object RegExp]") {
-                  return val.toString()
-                }
-                return val
-              },
-              2
-            )
-          )
+          // const fs = require("node:fs")
+          // const path = require("node:path")
+          // fs.writeFileSync(
+          //   path.join(process.cwd(), "__HtmlWebpackMixinRobot"),
+          //   JSON.stringify(
+          //     data,
+          //     (key, val) => {
+          //       if (Object.prototype.toString.call(val) === "[object RegExp]") {
+          //         return val.toString()
+          //       }
+          //       return val
+          //     },
+          //     2
+          //   )
+          // )
           // 动态创建base标签
           if (this.options.env && this.options.robotUrl) {
             const str = `<script src="${this.options.robotUrl}"></script><script>${this.options.robot}.createInstance(${this.options.env}, "${this.options.robotInstance}")</script>`

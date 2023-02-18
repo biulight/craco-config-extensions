@@ -250,7 +250,7 @@ module.exports = {
   `inject: false` 示例，参考[html-webpack-plugin](https://github.com/jantimon/html-webpack-plugin/tree/main/examples/custom-insertion-position)
   模板语法参考[EJS](https://ejs.co/#docs) 
 
-##### 新方案
+##### 方案二（推荐）
 
 > 使用`HtmlWebpackMixinRobot`插件
 

@@ -95,10 +95,21 @@ class LoadRobot {
    *
    */
   static load(list: string[]) {
+    const fragment = document.createDocumentFragment()
     for (const url of list) {
-      if (url.endsWith(".js")) LoadRobot.createScript(url)
-      if (url.endsWith(".css")) LoadRobot.createLink(url)
+      if (url.endsWith(".js")) {
+        fragment.appendChild(LoadRobot.createScript(url, false))
+      }
+      if (url.endsWith(".css")) {
+        fragment.appendChild(LoadRobot.createLink(url, false))
+      }
     }
+
+    const currentScript = document.currentScript
+    currentScript?.parentElement?.insertBefore(
+      fragment,
+      currentScript.nextElementSibling
+    )
   }
 
   /**
@@ -113,7 +124,7 @@ class LoadRobot {
     document.getElementsByTagName(position)[0].appendChild(fragment)
   }
 
-  static createScript(url: string, callback?: Function) {
+  static createScript(url: string, auto: boolean = true, callback?: Function) {
     let script = document.createElement("script")
     let fn = callback || function () {}
     script.setAttribute("type", "text/javascript")
@@ -136,15 +147,17 @@ class LoadRobot {
     }
 
     script.src = url
-    document.getElementsByTagName("head")[0].appendChild(script)
+    auto && document.getElementsByTagName("head")[0].appendChild(script)
+    return script
   }
 
-  static createLink(url: string) {
+  static createLink(url: string, auto: boolean = true) {
     const link = document.createElement("link")
     link.setAttribute("rel", "stylesheet")
     link.setAttribute("type", "text/css")
     link.setAttribute("href", url)
-    document.getElementsByTagName("head")[0].appendChild(link)
+    auto && document.getElementsByTagName("head")[0].appendChild(link)
+    return link
   }
 }
 

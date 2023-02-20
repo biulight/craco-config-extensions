@@ -1,5 +1,6 @@
 import { fileURLToPath } from "node:url"
 import alias from "@rollup/plugin-alias"
+import replace from "@rollup/plugin-replace"
 import resolve from "@rollup/plugin-node-resolve"
 import commonjs from "@rollup/plugin-commonjs"
 import typescript from "@rollup/plugin-typescript"
@@ -24,6 +25,10 @@ export default [
       }
     ],
     plugins: [
+      replace({
+        // "__DEV__": process.env.NODE_ENV !== 'production'
+        "__DEV__": process.env.NODE_ENV !== 'production'
+      }),
       typescript(),
       babel({
         extensions: ['.js', '.ts'],
@@ -51,6 +56,9 @@ export default [
           // { find: "@", replacement: path.resolve(__dirname, './src') }
           { find: "@", replacement: fileURLToPath(new URL('src', import.meta.url)) }
         ]
+      }),
+      replace({
+        "__DEV__": process.env.NODE_ENV !== 'production'
       }),
       // resolve({
       //   customResolveOptions: {

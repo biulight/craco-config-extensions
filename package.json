@@ -1,6 +1,6 @@
 {
   "name": "@biulight/craco-config-extensions",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "简化craco配置，支持动态加载打包产物",
   "keywords": [
     "craco",
@@ -23,7 +23,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "rollup --config rollup.config.js -w",
-    "build": "rollup -c",
+    "build": "cross-env NODE_ENV=production rollup -c",
     "test": "cross-env NODE_ENV=test && jest -o --collectCoverage",
     "test:all": "cross-env NODE_ENV=test && jest --collectCoverage",
     "clean": "rimraf dist",
@@ -47,6 +47,7 @@
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-commonjs": "^24.0.0",
     "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-replace": "^5.0.2",
     "@rollup/plugin-typescript": "^11.0.0",
     "@types/jest": "^29.2.5",
     "@types/webpack": "^5.28.0",

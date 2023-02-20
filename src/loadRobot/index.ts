@@ -69,6 +69,9 @@ class LoadRobot {
     const { hostname } = new URL(window.location.href)
     this.#envConfig = options[hostname] || {}
     const staticDomain = this.#envConfig["STATIC_DOMAIN"]
+    if (__DEV__ && staticDomain) {
+      console.warn("已配置 STATIC_DOMAIN ，将自动创建 base 标签")
+    }
     this.createBase(staticDomain)
   }
 
@@ -94,13 +97,19 @@ class LoadRobot {
    * load resource by creating tag element
    *
    */
-  static load(list: string[]) {
+  static load(list: string[], callback?: () => void) {
     const fragment = document.createDocumentFragment()
+    let readyLoadNum = list.length
+    const updateFunc = () => {
+      readyLoadNum--
+      if (readyLoadNum === 0 && callback) callback()
+    }
     for (const url of list) {
       if (url.endsWith(".js")) {
-        fragment.appendChild(LoadRobot.createScript(url, false))
+        fragment.appendChild(LoadRobot.createScript(url, false, updateFunc))
       }
       if (url.endsWith(".css")) {
+        readyLoadNum--
         fragment.appendChild(LoadRobot.createLink(url, false))
       }
     }

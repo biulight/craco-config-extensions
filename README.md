@@ -65,6 +65,12 @@ yarn add --dev @biulight/craco-config-extensions
 
 读取指定`.env`文件中指定前缀的变量
 
+#### `LoadRobot`
+
+```js
+
+```
+
 
 ### 示例
 

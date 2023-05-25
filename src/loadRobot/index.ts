@@ -27,6 +27,8 @@ const defaultOptional = {
   key: 'BIU_LIGHT_ROBOT_INSTANCE'
 }
 
+const ROBOT = Symbol.for('BIU_LIGHT_ROBOT_INSTANCE')
+
 class LoadRobot {
   #envConfig: Record<string, string> = {}
   #outlet = ['getEnvConfig']
@@ -61,9 +63,18 @@ class LoadRobot {
     const { key } = optional
     // @ts-ignore
     window[key] = new Proxy(this, this.#proxyHandler)
+    // @ts-ignore
+    window[ROBOT] = key
     LoadRobot.#permit = false
     // @ts-ignore
     return window[key]
+  }
+
+  static getInstance (): LoadRobot {
+    // @ts-ignore
+    if (!window[ROBOT]) throw new Error('LoadRobot need initialization')
+    // @ts-ignore
+    return window[window[ROBOT]]
   }
 
   /**

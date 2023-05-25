@@ -180,9 +180,10 @@ class LoadRobot {
     if (script.readyState) {
       // @ts-ignore
       script.onreadystatechange = function () {
-        // @ts-ignore
         if (
+          // @ts-ignore
           script.readyState === 'loaded' ||
+          // @ts-ignore
           script.readyState === 'complete'
         ) {
           // @ts-ignore

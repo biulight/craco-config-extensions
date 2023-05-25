@@ -1,29 +1,31 @@
-import type { Compiler } from "webpack"
-import type HtmlWebpackPlugin from "html-webpack-plugin"
-import type { HtmlTagObject } from "html-webpack-plugin"
+import type { Compiler } from 'webpack'
+import type HtmlWebpackPlugin from 'html-webpack-plugin'
+import type { HtmlTagObject } from 'html-webpack-plugin'
 
-import { insertStringBefore, insertStringAfter } from "@/utils"
+import { insertStringBefore, insertStringAfter } from '@/utils'
 
 interface Options {
   robot?: string
   robotInstance?: string
   robotUrl?: string
   env?: string
+  force?: boolean // 开启pathname匹配规则
 }
 
 export default class HtmlWebpackMixinRobot {
   options: Options
   htmlWebpackPlugin: typeof HtmlWebpackPlugin
 
-  constructor(htmlWebpackPlugin: typeof HtmlWebpackPlugin, options: Options) {
+  constructor (htmlWebpackPlugin: typeof HtmlWebpackPlugin, options: Options) {
     this.htmlWebpackPlugin = htmlWebpackPlugin
     this.options = {
-      robot: "_BIU_LOAD_ROBOT",
-      ...options,
+      robot: '_BIU_LOAD_ROBOT',
+      force: false,
+      ...options
     }
   }
 
-  static insertRobotFunc(
+  static insertRobotFunc (
     html: string,
     tags: HtmlTagObject[],
     position: string,
@@ -34,7 +36,7 @@ export default class HtmlWebpackMixinRobot {
       const { tagName, attributes } = tag
       return {
         tagName,
-        attributes,
+        attributes
       }
     })
     const str = `<script>${options.robot}.loadOrigin(${JSON.stringify(
@@ -43,11 +45,11 @@ export default class HtmlWebpackMixinRobot {
     return insertStringBefore(html, `</${position}>`, str)
   }
 
-  apply(compiler: Compiler) {
-    compiler.hooks.compilation.tap("HtmlWebpackMixinRobot", (compilation) => {
+  apply (compiler: Compiler) {
+    compiler.hooks.compilation.tap('HtmlWebpackMixinRobot', (compilation) => {
       this.htmlWebpackPlugin
         .getHooks(compilation)
-        .afterTemplateExecution.tap("HtmlWebpackMixinRobot", (data) => {
+        .afterTemplateExecution.tap('HtmlWebpackMixinRobot', (data) => {
           // const fs = require("node:fs")
           // const path = require("node:path")
           // fs.writeFileSync(
@@ -65,8 +67,8 @@ export default class HtmlWebpackMixinRobot {
           // )
           // 动态创建base标签
           if (this.options.env && this.options.robotUrl) {
-            const str = `<script src="${this.options.robotUrl}"></script><script>${this.options.robot}.createInstance(${this.options.env}, "${this.options.robotInstance}")</script>`
-            data.html = insertStringAfter(data.html, "<head>", str)
+            const str = `<script src="${this.options.robotUrl}"></script><script>${this.options.robot}.createInstance(${this.options.env}, {key: "${this.options.robotInstance}", force: ${this.options.force}})</script>`
+            data.html = insertStringAfter(data.html, '<head>', str)
           }
 
           // 动态加载资源
@@ -74,13 +76,13 @@ export default class HtmlWebpackMixinRobot {
           data.html = HtmlWebpackMixinRobot.insertRobotFunc(
             data.html,
             headTags,
-            "head",
+            'head',
             this.options
           )
           data.html = HtmlWebpackMixinRobot.insertRobotFunc(
             data.html,
             bodyTags,
-            "body",
+            'body',
             this.options
           )
           return data

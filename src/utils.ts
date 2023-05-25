@@ -14,8 +14,9 @@ export const getWebpackPlugin = (
   pluginName: string,
   id: number = 0
 ) => {
-  if (id === 0)
+  if (id === 0) {
     return plugins.find((plugin) => plugin.constructor.name === pluginName)
+  }
   const sets = plugins.filter(
     (plugin) => plugin.constructor.name === pluginName
   )

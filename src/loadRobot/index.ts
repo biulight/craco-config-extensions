@@ -1,103 +1,153 @@
-import type { HtmlTagObject } from "html-webpack-plugin"
+import type { HtmlTagObject } from 'html-webpack-plugin'
 
 interface HtmlAttributes {
   [attributeName: string]: string | boolean | null | undefined
 }
 
-function createTag(
+function createTag (
   tagName: string,
   attributes: HtmlAttributes,
   position?: string
 ) {
   const tag = document.createElement(tagName)
   for (const key in attributes) {
-    if (!attributes.hasOwnProperty(key)) continue
+    if (!Object.hasOwn(attributes, key)) continue
     tag.setAttribute(key, attributes[key] as string)
   }
   position && document.getElementsByTagName(position)[0].appendChild(tag)
   return tag
 }
 
+interface Optional {
+  key?: string
+  force?: boolean // 开启pathname匹配
+}
+
+const defaultOptional = {
+  key: 'BIU_LIGHT_ROBOT_INSTANCE'
+}
+
+const ROBOT = Symbol.for('BIU_LIGHT_ROBOT_INSTANCE')
+
 class LoadRobot {
   #envConfig: Record<string, string> = {}
-  #outlet = ["getEnvConfig"]
+  #outlet = ['getEnvConfig']
 
   #proxyHandler = {
-    get(target: LoadRobot, propKey: string, receiver: LoadRobot) {
+    get (target: LoadRobot, propKey: string, receiver: LoadRobot) {
       // if (target.#outlet.includes(propKey)) return Reflect.get(target, propKey, receiver)
-      if (target.#outlet.includes(propKey))
+      if (target.#outlet.includes(propKey)) {
         return Reflect.get(target, propKey).bind(target)
+      }
       return target.#envConfig[propKey]
       // return Reflect.get(target, propKey)
-    },
+    }
   }
 
   static #permit = false
 
-  constructor(
-    options: Record<string, any>,
-    key: string = "BIU_LIGHT_ROBOT_INSTANCE"
+  constructor (
+    envMap: Record<string, any>,
+    optional: Optional
+    // key: string = "BIU_LIGHT_ROBOT_INSTANCE"
   ) {
-    if (!LoadRobot.#permit)
+    if (!LoadRobot.#permit) {
       throw new Error(
         "LoadRobot only supports instantiation through the static method 'createInstance' "
       )
+    }
+    // optional ||= defaultOptional
     // 初始化
-    this.#init(options)
+    this.#init(envMap, optional)
     // 挂载
+    const { key } = optional
     // @ts-ignore
     window[key] = new Proxy(this, this.#proxyHandler)
+    // @ts-ignore
+    window[ROBOT] = key
     LoadRobot.#permit = false
     // @ts-ignore
     return window[key]
   }
 
+  static getInstance (): LoadRobot {
+    // @ts-ignore
+    if (!window[ROBOT]) throw new Error('LoadRobot need initialization')
+    // @ts-ignore
+    return window[window[ROBOT]]
+  }
+
   /**
    * create instance
    */
-  static createInstance(
-    options: Record<string, any>,
-    key = "BIU_LIGHT_ROBOT_INSTANCE"
+  static createInstance (
+    envMap: Record<string, any>,
+    optional?: Optional
+    // key = "BIU_LIGHT_ROBOT_INSTANCE"
   ) {
+    const { key } = (optional ||= defaultOptional)
     // @ts-ignore
     if (window[key]) return window[key]
     this.#permit = true
-    return new LoadRobot(options, key)
+    return new LoadRobot(envMap, optional)
   }
 
-  #init(options: Record<string, any>) {
-    const { hostname } = new URL(window.location.href)
-    this.#envConfig = options[hostname] || {}
-    const staticDomain = this.#envConfig["STATIC_DOMAIN"]
+  #init (envMap: Record<string, any>, { force }: Optional) {
+    const { hostname, pathname } = new URL(window.location.href)
+    // todo 最长子序列
+    this.#envConfig = force
+      ? this.#getAccordEnvConfig(envMap, { hostname, pathname })
+      : envMap[hostname] || {}
+    const staticDomain = this.#envConfig.STATIC_DOMAIN
     if (__DEV__ && staticDomain) {
-      console.warn("已配置 STATIC_DOMAIN ，将自动创建 base 标签")
+      console.warn('已配置 STATIC_DOMAIN ，将自动创建 base 标签')
     }
-    this.createBase(staticDomain)
+    staticDomain && this.createBase(staticDomain)
   }
 
-  public getEnvConfig() {
+  #getAccordEnvConfig (
+    envMap: Record<string, any>,
+    { hostname, pathname }: { hostname: string; pathname: string }
+  ) {
+    let optimum = ''
+    for (const key in envMap) {
+      if (!Object.hasOwn(envMap, key)) continue
+      // 自身属性
+      if (!key.startsWith(hostname)) continue
+      // hostname符合
+      const restStr = key.slice(hostname.length)
+      if (pathname.startsWith(restStr)) {
+        optimum = key
+        break
+      }
+    }
+    return envMap[optimum] || {}
+  }
+
+  public getEnvConfig () {
     return this.#envConfig
   }
+
   /**
    * load baseUrl by creating base element
    *
    */
-  createBase(url?: string, success?: () => void) {
-    if (!url) return
-    let baseEle = document.createElement("base")
+  createBase (url: string, success?: () => void) {
+    const baseEle = document.createElement('base')
     baseEle.href = url
 
-    const header = document.getElementsByTagName("head")[0]
+    const header = document.getElementsByTagName('head')[0]
     // header.insertBefore(baseEle, document.currentScript!.nextElementSibling)
     header.insertBefore(baseEle, header.firstElementChild)
     // load successfully
     success && success()
   }
+
   /**
    * load resource by creating tag element
    *
    */
-  static load(list: string[], callback?: () => void) {
+  static load (list: string[], callback?: () => void) {
     const fragment = document.createDocumentFragment()
     let readyLoadNum = list.length
     const updateFunc = () => {
@@ -105,10 +155,10 @@ class LoadRobot {
       if (readyLoadNum === 0 && callback) callback()
     }
     for (const url of list) {
-      if (url.endsWith(".js")) {
+      if (url.endsWith('.js')) {
         fragment.appendChild(LoadRobot.createScript(url, false, updateFunc))
       }
-      if (url.endsWith(".css")) {
+      if (url.endsWith('.css')) {
         readyLoadNum--
         fragment.appendChild(LoadRobot.createLink(url, false))
       }
@@ -124,7 +174,7 @@ class LoadRobot {
   /**
    * load Webpack Resource
    */
-  static loadOrigin(tags: HtmlTagObject[], position: string) {
+  static loadOrigin (tags: HtmlTagObject[], position: string) {
     const fragment = document.createDocumentFragment()
     for (const tag of tags) {
       const { tagName, attributes } = tag
@@ -133,16 +183,20 @@ class LoadRobot {
     document.getElementsByTagName(position)[0].appendChild(fragment)
   }
 
-  static createScript(url: string, auto: boolean = true, callback?: Function) {
-    let script = document.createElement("script")
-    let fn = callback || function () {}
-    script.setAttribute("type", "text/javascript")
+  static createScript (url: string, auto: boolean = true, callback?: Function) {
+    const script = document.createElement('script')
+    const fn = callback || function () {}
+    script.setAttribute('type', 'text/javascript')
     // @ts-ignore
     if (script.readyState) {
       // @ts-ignore
       script.onreadystatechange = function () {
-        // @ts-ignore
-        if (script.readyState == "loaded" || script.readyState == "complete") {
+        if (
+          // @ts-ignore
+          script.readyState === 'loaded' ||
+          // @ts-ignore
+          script.readyState === 'complete'
+        ) {
           // @ts-ignore
           script.onreadystatechange = null
           fn()
@@ -156,16 +210,16 @@ class LoadRobot {
     }
 
     script.src = url
-    auto && document.getElementsByTagName("head")[0].appendChild(script)
+    auto && document.getElementsByTagName('head')[0].appendChild(script)
     return script
   }
 
-  static createLink(url: string, auto: boolean = true) {
-    const link = document.createElement("link")
-    link.setAttribute("rel", "stylesheet")
-    link.setAttribute("type", "text/css")
-    link.setAttribute("href", url)
-    auto && document.getElementsByTagName("head")[0].appendChild(link)
+  static createLink (url: string, auto: boolean = true) {
+    const link = document.createElement('link')
+    link.setAttribute('rel', 'stylesheet')
+    link.setAttribute('type', 'text/css')
+    link.setAttribute('href', url)
+    auto && document.getElementsByTagName('head')[0].appendChild(link)
     return link
   }
 }

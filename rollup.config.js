@@ -26,8 +26,7 @@ export default [
     ],
     plugins: [
       replace({
-        // "__DEV__": process.env.NODE_ENV !== 'production'
-        "__DEV__": process.env.NODE_ENV !== 'production'
+        "__DEV__": process.env.NODE_ENV !== 'production', // 本地link调试
       }),
       typescript(),
       babel({
@@ -58,7 +57,8 @@ export default [
         ]
       }),
       replace({
-        "__DEV__": process.env.NODE_ENV !== 'production'
+        // "__DEV__": process.env.NODE_ENV !== 'production'
+        "__DEV__":  `process.env.NODE_ENV !== 'production'`
       }),
       // resolve({
       //   customResolveOptions: {

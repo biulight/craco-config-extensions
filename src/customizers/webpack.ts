@@ -1,5 +1,5 @@
 import type { Configuration } from "webpack"
-import fs from "node:fs"
+// import fs from 'node:fs'
 import { getWebpackPlugin, getType } from "../utils"
 
 /**
@@ -7,8 +7,9 @@ import { getWebpackPlugin, getType } from "../utils"
  */
 export const writeConfigForDebug =
   (filename: string) => (config: Configuration) => {
-    if (!filename)
+    if (!filename) {
       throw new Error("Function: writeConfigForDebug must has a parameter")
+    }
     const fs = require("node:fs")
     const path = require("node:path")
     fs.writeFileSync(
@@ -69,14 +70,16 @@ export const addInterpolateHtmlPlugin =
 export const modifyOutputConfig =
   (modify: Record<string, string>, removeSet: string[] = []) =>
   (config: Configuration) => {
-    if (getType(modify) !== "object")
+    if (getType(modify) !== "object") {
       throw new Error(
         "Function: modifyOutputConfig's first parameter must be object!"
       )
-    if (getType(removeSet) !== "array")
+    }
+    if (getType(removeSet) !== "array") {
       throw new Error(
-        `Function: modifyOutputConfig\'s second parameter must be array!`
+        "Function: modifyOutputConfig's second parameter must be array!"
       )
+    }
     if (typeof config.output !== "object") return config
     Object.assign(config.output, modify)
     if (!config.output) return config
@@ -89,7 +92,7 @@ export const modifyOutputConfig =
 /** add split chunk plugin  */
 export const addSplitChunksPlugin =
   (value: Record<string, any>) => (config: Configuration) => {
-    let splitChunks = config.optimization?.splitChunks || {}
+    const splitChunks = config.optimization?.splitChunks || {}
     Object.assign(splitChunks, value)
     config.optimization!.splitChunks = splitChunks
     return config

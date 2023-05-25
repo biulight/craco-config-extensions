@@ -1,8 +1,8 @@
-export { default as HtmlWebpackInjectHead } from "./htmlWebpackInjectHead"
-export { default as HtmlWebpackMixinRobot } from "./htmlWebpackMixinRobot"
-
 import fs, { PathLike } from "node:fs"
 import { resolveApp } from "@/utils"
+
+export { default as HtmlWebpackInjectHead } from "./htmlWebpackInjectHead"
+export { default as HtmlWebpackMixinRobot } from "./htmlWebpackMixinRobot"
 // import type { Configuration } from "webpack"
 
 /**
@@ -17,7 +17,7 @@ export const readDotenvFiles = (environment: string, id?: string) => {
     dotenvCore,
   ].filter(Boolean)
 
-  let dotenvData: Record<string, any> = { raw: {} }
+  const dotenvData: Record<string, any> = { raw: {} }
 
   dotenvFiles.forEach((dotenvFile) => {
     if (fs.existsSync(dotenvFile as PathLike)) {
@@ -31,7 +31,7 @@ export const readDotenvFiles = (environment: string, id?: string) => {
   })
 
   if (id) {
-    let mark = dotenvData.raw[`${id}_KEY`] || environment
+    const mark = dotenvData.raw[`${id}_KEY`] || environment
     delete dotenvData.raw[`${id}_KEY`]
     dotenvData[mark] = {}
 
@@ -80,7 +80,7 @@ export const readAllDotenvFiles = (environments: string[], id = "") => {
   //   return dotenvData
   // }
 
-  let allDotenvData: Record<string, any> = { raw: {} }
+  const allDotenvData: Record<string, any> = { raw: {} }
 
   if (id) allDotenvData[id] = {}
 

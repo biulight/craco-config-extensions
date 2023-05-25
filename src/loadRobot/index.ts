@@ -11,11 +11,20 @@ function createTag(
 ) {
   const tag = document.createElement(tagName)
   for (const key in attributes) {
-    if (!attributes.hasOwnProperty(key)) continue
+    if (!Object.hasOwn(attributes, key)) continue
     tag.setAttribute(key, attributes[key] as string)
   }
   position && document.getElementsByTagName(position)[0].appendChild(tag)
   return tag
+}
+
+interface Optional {
+  key?: string
+  force?: boolean // 开启pathname匹配
+}
+
+const defaultOptional = {
+  key: "BIU_LIGHT_ROBOT_INSTANCE",
 }
 
 class LoadRobot {
@@ -25,8 +34,9 @@ class LoadRobot {
   #proxyHandler = {
     get(target: LoadRobot, propKey: string, receiver: LoadRobot) {
       // if (target.#outlet.includes(propKey)) return Reflect.get(target, propKey, receiver)
-      if (target.#outlet.includes(propKey))
+      if (target.#outlet.includes(propKey)) {
         return Reflect.get(target, propKey).bind(target)
+      }
       return target.#envConfig[propKey]
       // return Reflect.get(target, propKey)
     },
@@ -35,16 +45,20 @@ class LoadRobot {
   static #permit = false
 
   constructor(
-    options: Record<string, any>,
-    key: string = "BIU_LIGHT_ROBOT_INSTANCE"
+    envMap: Record<string, any>,
+    optional: Optional
+    // key: string = "BIU_LIGHT_ROBOT_INSTANCE"
   ) {
-    if (!LoadRobot.#permit)
+    if (!LoadRobot.#permit) {
       throw new Error(
         "LoadRobot only supports instantiation through the static method 'createInstance' "
       )
+    }
+    // optional ||= defaultOptional
     // 初始化
-    this.#init(options)
+    this.#init(envMap, optional)
     // 挂载
+    const { key } = optional
     // @ts-ignore
     window[key] = new Proxy(this, this.#proxyHandler)
     LoadRobot.#permit = false
@@ -56,35 +70,59 @@ class LoadRobot {
    * create instance
    */
   static createInstance(
-    options: Record<string, any>,
-    key = "BIU_LIGHT_ROBOT_INSTANCE"
+    envMap: Record<string, any>,
+    optional?: Optional
+    // key = "BIU_LIGHT_ROBOT_INSTANCE"
   ) {
+    const { key } = (optional ||= defaultOptional)
     // @ts-ignore
     if (window[key]) return window[key]
     this.#permit = true
-    return new LoadRobot(options, key)
+    return new LoadRobot(envMap, optional)
   }
 
-  #init(options: Record<string, any>) {
-    const { hostname } = new URL(window.location.href)
-    this.#envConfig = options[hostname] || {}
-    const staticDomain = this.#envConfig["STATIC_DOMAIN"]
+  #init(envMap: Record<string, any>, { force }: Optional) {
+    const { hostname, pathname } = new URL(window.location.href)
+    // todo 最长子序列
+    this.#envConfig = force
+      ? this.#getAccordEnvConfig(envMap, { hostname, pathname })
+      : envMap[hostname] || {}
+    const staticDomain = this.#envConfig.STATIC_DOMAIN
     if (__DEV__ && staticDomain) {
       console.warn("已配置 STATIC_DOMAIN ，将自动创建 base 标签")
     }
-    this.createBase(staticDomain)
+    staticDomain && this.createBase(staticDomain)
+  }
+
+  #getAccordEnvConfig(
+    envMap: Record<string, any>,
+    { hostname, pathname }: { hostname: string; pathname: string }
+  ) {
+    let optimum = ""
+    for (const key in envMap) {
+      if (!Object.hasOwn(envMap, key)) continue
+      // 自身属性
+      if (!key.startsWith(hostname)) continue
+      // hostname符合
+      const restStr = key.slice(hostname.length)
+      if (pathname.startsWith(restStr)) {
+        optimum = key
+        break
+      }
+    }
+    return envMap[optimum] || {}
   }
 
   public getEnvConfig() {
     return this.#envConfig
   }
+
   /**
    * load baseUrl by creating base element
    *
    */
-  createBase(url?: string, success?: () => void) {
-    if (!url) return
-    let baseEle = document.createElement("base")
+  createBase(url: string, success?: () => void) {
+    const baseEle = document.createElement("base")
     baseEle.href = url
 
     const header = document.getElementsByTagName("head")[0]
@@ -93,6 +131,7 @@ class LoadRobot {
     // load successfully
     success && success()
   }
+
   /**
    * load resource by creating tag element
    *
@@ -134,8 +173,8 @@ class LoadRobot {
   }
 
   static createScript(url: string, auto: boolean = true, callback?: Function) {
-    let script = document.createElement("script")
-    let fn = callback || function () {}
+    const script = document.createElement("script")
+    const fn = callback || function () {}
     script.setAttribute("type", "text/javascript")
     // @ts-ignore
     if (script.readyState) {

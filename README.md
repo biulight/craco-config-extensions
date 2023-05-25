@@ -301,6 +301,7 @@ module.exports = {
           env: JSON.stringify(DYNAMIC_ENV), // 可选，
           robotUrl: "preload.worker.js", // 可选, 当`robotUrl`和`env`同时存在，会实例化`loadRobot`类
           robotInstance: "BIU_BIU", // 可选，挂载在`global`对象上key，默认值`BIU_LIGHT_ROBOT_INSTANCE`
+          force: true, // 可选,是否强制匹配pathname，默认值false(不匹配)
         })
       ]
     }

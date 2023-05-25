@@ -38,7 +38,7 @@
       "prettier --write",
       "git add"
     ],
-    "src/**/*.{js,jsx}": "eslint --fix"
+    "./src/**/*.{ts,tsx}": "eslint --fix"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",

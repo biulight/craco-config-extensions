@@ -1,10 +1,10 @@
-import type { HtmlTagObject } from "html-webpack-plugin"
+import type { HtmlTagObject } from 'html-webpack-plugin'
 
 interface HtmlAttributes {
   [attributeName: string]: string | boolean | null | undefined
 }
 
-function createTag(
+function createTag (
   tagName: string,
   attributes: HtmlAttributes,
   position?: string
@@ -24,27 +24,27 @@ interface Optional {
 }
 
 const defaultOptional = {
-  key: "BIU_LIGHT_ROBOT_INSTANCE",
+  key: 'BIU_LIGHT_ROBOT_INSTANCE'
 }
 
 class LoadRobot {
   #envConfig: Record<string, string> = {}
-  #outlet = ["getEnvConfig"]
+  #outlet = ['getEnvConfig']
 
   #proxyHandler = {
-    get(target: LoadRobot, propKey: string, receiver: LoadRobot) {
+    get (target: LoadRobot, propKey: string, receiver: LoadRobot) {
       // if (target.#outlet.includes(propKey)) return Reflect.get(target, propKey, receiver)
       if (target.#outlet.includes(propKey)) {
         return Reflect.get(target, propKey).bind(target)
       }
       return target.#envConfig[propKey]
       // return Reflect.get(target, propKey)
-    },
+    }
   }
 
   static #permit = false
 
-  constructor(
+  constructor (
     envMap: Record<string, any>,
     optional: Optional
     // key: string = "BIU_LIGHT_ROBOT_INSTANCE"
@@ -69,7 +69,7 @@ class LoadRobot {
   /**
    * create instance
    */
-  static createInstance(
+  static createInstance (
     envMap: Record<string, any>,
     optional?: Optional
     // key = "BIU_LIGHT_ROBOT_INSTANCE"
@@ -81,7 +81,7 @@ class LoadRobot {
     return new LoadRobot(envMap, optional)
   }
 
-  #init(envMap: Record<string, any>, { force }: Optional) {
+  #init (envMap: Record<string, any>, { force }: Optional) {
     const { hostname, pathname } = new URL(window.location.href)
     // todo 最长子序列
     this.#envConfig = force
@@ -89,16 +89,16 @@ class LoadRobot {
       : envMap[hostname] || {}
     const staticDomain = this.#envConfig.STATIC_DOMAIN
     if (__DEV__ && staticDomain) {
-      console.warn("已配置 STATIC_DOMAIN ，将自动创建 base 标签")
+      console.warn('已配置 STATIC_DOMAIN ，将自动创建 base 标签')
     }
     staticDomain && this.createBase(staticDomain)
   }
 
-  #getAccordEnvConfig(
+  #getAccordEnvConfig (
     envMap: Record<string, any>,
     { hostname, pathname }: { hostname: string; pathname: string }
   ) {
-    let optimum = ""
+    let optimum = ''
     for (const key in envMap) {
       if (!Object.hasOwn(envMap, key)) continue
       // 自身属性
@@ -113,7 +113,7 @@ class LoadRobot {
     return envMap[optimum] || {}
   }
 
-  public getEnvConfig() {
+  public getEnvConfig () {
     return this.#envConfig
   }
 
@@ -121,11 +121,11 @@ class LoadRobot {
    * load baseUrl by creating base element
    *
    */
-  createBase(url: string, success?: () => void) {
-    const baseEle = document.createElement("base")
+  createBase (url: string, success?: () => void) {
+    const baseEle = document.createElement('base')
     baseEle.href = url
 
-    const header = document.getElementsByTagName("head")[0]
+    const header = document.getElementsByTagName('head')[0]
     // header.insertBefore(baseEle, document.currentScript!.nextElementSibling)
     header.insertBefore(baseEle, header.firstElementChild)
     // load successfully
@@ -136,7 +136,7 @@ class LoadRobot {
    * load resource by creating tag element
    *
    */
-  static load(list: string[], callback?: () => void) {
+  static load (list: string[], callback?: () => void) {
     const fragment = document.createDocumentFragment()
     let readyLoadNum = list.length
     const updateFunc = () => {
@@ -144,10 +144,10 @@ class LoadRobot {
       if (readyLoadNum === 0 && callback) callback()
     }
     for (const url of list) {
-      if (url.endsWith(".js")) {
+      if (url.endsWith('.js')) {
         fragment.appendChild(LoadRobot.createScript(url, false, updateFunc))
       }
-      if (url.endsWith(".css")) {
+      if (url.endsWith('.css')) {
         readyLoadNum--
         fragment.appendChild(LoadRobot.createLink(url, false))
       }
@@ -163,7 +163,7 @@ class LoadRobot {
   /**
    * load Webpack Resource
    */
-  static loadOrigin(tags: HtmlTagObject[], position: string) {
+  static loadOrigin (tags: HtmlTagObject[], position: string) {
     const fragment = document.createDocumentFragment()
     for (const tag of tags) {
       const { tagName, attributes } = tag
@@ -172,16 +172,19 @@ class LoadRobot {
     document.getElementsByTagName(position)[0].appendChild(fragment)
   }
 
-  static createScript(url: string, auto: boolean = true, callback?: Function) {
-    const script = document.createElement("script")
+  static createScript (url: string, auto: boolean = true, callback?: Function) {
+    const script = document.createElement('script')
     const fn = callback || function () {}
-    script.setAttribute("type", "text/javascript")
+    script.setAttribute('type', 'text/javascript')
     // @ts-ignore
     if (script.readyState) {
       // @ts-ignore
       script.onreadystatechange = function () {
         // @ts-ignore
-        if (script.readyState == "loaded" || script.readyState == "complete") {
+        if (
+          script.readyState === 'loaded' ||
+          script.readyState === 'complete'
+        ) {
           // @ts-ignore
           script.onreadystatechange = null
           fn()
@@ -195,16 +198,16 @@ class LoadRobot {
     }
 
     script.src = url
-    auto && document.getElementsByTagName("head")[0].appendChild(script)
+    auto && document.getElementsByTagName('head')[0].appendChild(script)
     return script
   }
 
-  static createLink(url: string, auto: boolean = true) {
-    const link = document.createElement("link")
-    link.setAttribute("rel", "stylesheet")
-    link.setAttribute("type", "text/css")
-    link.setAttribute("href", url)
-    auto && document.getElementsByTagName("head")[0].appendChild(link)
+  static createLink (url: string, auto: boolean = true) {
+    const link = document.createElement('link')
+    link.setAttribute('rel', 'stylesheet')
+    link.setAttribute('type', 'text/css')
+    link.setAttribute('href', url)
+    auto && document.getElementsByTagName('head')[0].appendChild(link)
     return link
   }
 }

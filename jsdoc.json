@@ -1,23 +1,28 @@
 {
-    "tags": {
-        "allowUnknownTags": false
-    },
-    "source": {
-        "include": ["src/"]
-    },
-    "includePattern": "\\.ts$",
-    "exclude": ["src/libs"],
-    "plugins": [
-        "plugins/markdown"
+  "tags": {
+    "allowUnknownTags": false
+  },
+  "source": {
+    "include": [
+      "dist/"
     ],
-    "opts": {
-        "template": "node_modules/docdash",
-        "encoding": "utf8",
-        "destination": "./docs/",
-        "recurse": true
-    },
-    "templates": {
-        "cleverLinks": false,
-        "monospaceLinks": false
-    }
+    "exclude": [
+      "src/libs"
+    ],
+    "includePattern": "\\.js$",
+    "excludePattern": "\\.d.ts"
+  },
+  "plugins": [
+    "plugins/markdown"
+  ],
+  "opts": {
+    "template": "node_modules/docdash",
+    "encoding": "utf8",
+    "destination": "./docs/",
+    "recurse": true
+  },
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false
+  }
 }

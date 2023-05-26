@@ -6,6 +6,7 @@
 
 # jsdoc
 /out
+/docs
 
 # production
 /dist

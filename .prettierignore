@@ -2,6 +2,7 @@
 build
 coverage
 dist
+docs
 
 # Ignore all HTML files:
 *.html

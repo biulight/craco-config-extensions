@@ -14,25 +14,25 @@ export default [
     output: [
       {
         file: 'dist/loadRobot/index.esm.js',
-        format: "es"
+        format: 'es'
       },
       {
-      name: '_BIU_LOAD_ROBOT',
-      file: 'dist/loadRobot/index.umd.js',
-      format: 'umd',
-      sourcemap: isDevelopment,
-      minifyInternalExports: true,
+        name: '_BIU_LOAD_ROBOT',
+        file: 'dist/loadRobot/index.umd.js',
+        format: 'umd',
+        sourcemap: isDevelopment,
+        minifyInternalExports: true
       }
     ],
     plugins: [
       replace({
-        "__DEV__": process.env.NODE_ENV !== 'production', // 本地link调试
+        __DEV__: process.env.NODE_ENV !== 'production' // 本地link调试
       }),
       typescript(),
       babel({
         extensions: ['.js', '.ts'],
-        exclude: ["node_modules"],
-        "babelHelpers": "bundled"
+        exclude: ['node_modules'],
+        babelHelpers: 'bundled'
       })
     ]
   },
@@ -45,20 +45,20 @@ export default [
         minifyInternalExports: true
       },
       {
-        file: "dist/index.esm.js",
-        format: "es",
-      },
+        file: 'dist/index.esm.js',
+        format: 'es'
+      }
     ],
     plugins: [
       alias({
         entries: [
           // { find: "@", replacement: path.resolve(__dirname, './src') }
-          { find: "@", replacement: fileURLToPath(new URL('src', import.meta.url)) }
+          { find: '@', replacement: fileURLToPath(new URL('src', import.meta.url)) }
         ]
       }),
       replace({
         // "__DEV__": process.env.NODE_ENV !== 'production'
-        "__DEV__":  `process.env.NODE_ENV !== 'production'`
+        __DEV__: 'process.env.NODE_ENV !== \'production\''
       }),
       // resolve({
       //   customResolveOptions: {
@@ -66,16 +66,16 @@ export default [
       //   }
       // }),
       commonjs({
-        include: "node_modules"
+        include: 'node_modules'
       }),
       resolve(),
       typescript(),
       babel({
         extensions: ['.js', '.ts'],
-        exclude: ["node_modules"],
-        "babelHelpers": "bundled"
+        exclude: ['node_modules'],
+        babelHelpers: 'bundled'
       })
     ],
-    external: ["dotenv", "html-webpack-plugin"]
+    external: ['dotenv', 'html-webpack-plugin']
   }
 ]

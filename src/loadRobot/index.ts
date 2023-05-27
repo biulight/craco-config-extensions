@@ -120,7 +120,7 @@ class LoadRobot {
     if (__DEV__ && staticDomain) {
       console.warn('已配置 STATIC_DOMAIN ，将自动创建 base 标签')
     }
-    staticDomain && this.createBase(staticDomain)
+    staticDomain && this.#createBase(staticDomain)
   }
 
   /**
@@ -158,11 +158,11 @@ class LoadRobot {
   }
 
   /**
-   * 在html中注入base标签
+   * 在html文件的head标签顶部注入base标签
    * @param {string} href base标签的href属性值
    * @param {function=} success 成功插入base标签的回调
    */
-  createBase (href: string, success?: () => void) {
+  #createBase (href: string, success?: () => void) {
     const baseEle = document.createElement('base')
     baseEle.href = href
 

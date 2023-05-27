@@ -23,18 +23,25 @@ function createTag (
   return tag
 }
 
+/**
+ * @typedef {Object} RobotOptional LoadRobot类实例化的配置项
+ * @property {string} [key = BIU_LIGHT_ROBOT_INSTANCE] - 挂载在window对象上的loadrobot实例的标识
+ * @property {boolean} [force = false] - 环境信息根据pathname匹配；（true: 开启；false: 忽略pathname）
+ */
+
 interface Optional {
   key?: string
   force?: boolean // 开启pathname匹配
 }
 
 const defaultOptional = {
-  key: 'BIU_LIGHT_ROBOT_INSTANCE'
+  key: 'BIU_LIGHT_ROBOT_INSTANCE',
+  force: false
 }
 
 const ROBOT = Symbol.for('BIU_LIGHT_ROBOT_INSTANCE')
 
-/** HTML静态资源环境信息管理器，不支持使用关键字new创建 */
+/** HTML静态资源环境信息管理器 */
 class LoadRobot {
   #envConfig: Record<string, string> = {}
   #outlet = ['getEnvConfig']
@@ -52,11 +59,15 @@ class LoadRobot {
 
   static #permit = false
 
-  constructor (
-    envMap: Record<string, any>,
-    optional: Optional
-    // key: string = "BIU_LIGHT_ROBOT_INSTANCE"
-  ) {
+  /**
+   * 仅支持通过静态方法createInstance实例化LoadRobot类
+   * @param {Object.<string, Object>}envMap 环境配置
+   * @param {Object} optional
+   * @param {string} [optional.key = "BIU_LIGHT_ROBOT_INSTANCE"] 挂载在window对象上的loadrobot实例的标识
+   * @param {boolean} [optional.force = false] 环境信息根据pathname匹配；（true: 开启；false: 忽略pathname）
+   * @hideconstructor
+   */
+  constructor (envMap: Record<string, any>, optional: Optional) {
     if (!LoadRobot.#permit) {
       throw new Error(
         "LoadRobot only supports instantiation through the static method 'createInstance' "
@@ -78,7 +89,7 @@ class LoadRobot {
 
   /**
    * 获取唯一的域名映射器实例
-   * @returns {LoadRobot}
+   * @returns {LoadRobot} The LoadRobot instance.
    */
   static getInstance (): LoadRobot {
     // @ts-ignore
@@ -89,19 +100,22 @@ class LoadRobot {
 
   /**
    * 创建一个LoadRobot实列
-   * @param envMap
-   * @param optional
+   * @param {Object.<string, Object>}envMap 环境配置
+   * @param {Object} optional
+   * @param {string} [optional.key = "BIU_LIGHT_ROBOT_INSTANCE"] 挂载在window对象上的loadrobot实例的标识
+   * @param {boolean} [optional.force = false] 环境信息根据pathname匹配；（true: 开启；false: 忽略pathname）
    */
   static createInstance (
     envMap: Record<string, any>,
     optional?: Optional
     // key = "BIU_LIGHT_ROBOT_INSTANCE"
   ) {
-    const { key } = (optional ||= defaultOptional)
+    const _optional = { ...defaultOptional, ...optional }
+    const { key } = _optional
     // @ts-ignore
     if (window[key]) return window[key]
     this.#permit = true
-    return new LoadRobot(envMap, optional)
+    return new LoadRobot(envMap, _optional)
   }
 
   /**
@@ -151,7 +165,7 @@ class LoadRobot {
 
   /**
    * 获取当前环境信息配置
-   * @returns {object}
+   * @returns {Object.<string, string>}
    */
   public getEnvConfig () {
     return this.#envConfig

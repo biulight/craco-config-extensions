@@ -1,10 +1,10 @@
-import { fileURLToPath } from "node:url"
-import alias from "@rollup/plugin-alias"
-import replace from "@rollup/plugin-replace"
-import resolve from "@rollup/plugin-node-resolve"
-import commonjs from "@rollup/plugin-commonjs"
-import typescript from "@rollup/plugin-typescript"
-import babel from "@rollup/plugin-babel"
+import { fileURLToPath } from 'node:url'
+import alias from '@rollup/plugin-alias'
+import replace from '@rollup/plugin-replace'
+import resolve from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
+import typescript from '@rollup/plugin-typescript'
+import babel from '@rollup/plugin-babel'
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 
@@ -13,7 +13,7 @@ export default [
     input: 'src/loadRobot/index.ts',
     output: [
       {
-        file: 'dist/loadRobot/index.js',
+        file: 'dist/loadRobot/index.esm.js',
         format: "es"
       },
       {

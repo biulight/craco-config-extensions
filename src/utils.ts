@@ -1,6 +1,6 @@
-import path from "node:path"
-import fs from "node:fs"
-import type { Configuration } from "webpack"
+import path from 'node:path'
+import fs from 'node:fs'
+import type { Configuration } from 'webpack'
 
 const appDirectory = fs.realpathSync(process.cwd())
 
@@ -10,7 +10,7 @@ export const resolveApp = (relativePath: string) =>
 
 /** look for webpack plugin that you expect */
 export const getWebpackPlugin = (
-  plugins: Configuration["plugins"] = [],
+  plugins: Configuration['plugins'] = [],
   pluginName: string,
   id: number = 0
 ) => {
@@ -20,7 +20,7 @@ export const getWebpackPlugin = (
   const sets = plugins.filter(
     (plugin) => plugin.constructor.name === pluginName
   )
-  if (id > sets.length) throw new Error("Function getWebpackPlugin")
+  if (id > sets.length) throw new Error('Function getWebpackPlugin')
   return sets[id]
 }
 

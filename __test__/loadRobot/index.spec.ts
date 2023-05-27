@@ -1,5 +1,5 @@
-import Robot from "@/loadRobot"
+// import Robot from '@/loadRobot'
 
-describe("class EnvConfig", () => {
-  it("create a instance by static function", () => {})
+describe('class EnvConfig', () => {
+  it('create a instance by static function', () => {})
 })

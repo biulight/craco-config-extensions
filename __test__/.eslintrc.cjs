@@ -9,7 +9,9 @@ module.exports = {
   env: {
   },
   globals: {
-    __DEV__: false,
-
+    __DEV__: "readonly",
+    describe: "readonly",
+    it: "readonly",
+    expect: "readonly"
   }
 }

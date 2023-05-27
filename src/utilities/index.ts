@@ -1,20 +1,20 @@
-import fs, { PathLike } from "node:fs"
-import { resolveApp } from "@/utils"
+import fs, { PathLike } from 'node:fs'
+import { resolveApp } from '@/utils'
 
-export { default as HtmlWebpackInjectHead } from "./htmlWebpackInjectHead"
-export { default as HtmlWebpackMixinRobot } from "./htmlWebpackMixinRobot"
+export { default as HtmlWebpackInjectHead } from './htmlWebpackInjectHead'
+export { default as HtmlWebpackMixinRobot } from './htmlWebpackMixinRobot'
 // import type { Configuration } from "webpack"
 
 /**
  * read env config file.the rule like create-react-env
  */
 export const readDotenvFiles = (environment: string, id?: string) => {
-  const dotenvCore = resolveApp(".env")
+  const dotenvCore = resolveApp('.env')
   const dotenvFiles = [
     `${dotenvCore}.${environment}.local`,
-    process.env.NODE_ENV !== "test" && `${dotenvCore}.local`,
+    process.env.NODE_ENV !== 'test' && `${dotenvCore}.local`,
     `${dotenvCore}.${environment}`,
-    dotenvCore,
+    dotenvCore
   ].filter(Boolean)
 
   const dotenvData: Record<string, any> = { raw: {} }
@@ -23,7 +23,7 @@ export const readDotenvFiles = (environment: string, id?: string) => {
     if (fs.existsSync(dotenvFile as PathLike)) {
       // const { parsed } = require("dotenv").parse({ path: dotenvFile })
       // fs.readFileSync(dotenvFile as string)
-      const parsed = require("dotenv").parse(
+      const parsed = require('dotenv').parse(
         fs.readFileSync(dotenvFile as string)
       )
       Object.assign(dotenvData.raw, parsed)
@@ -46,7 +46,7 @@ export const readDotenvFiles = (environment: string, id?: string) => {
 /**
  * read all env config file
  */
-export const readAllDotenvFiles = (environments: string[], id = "") => {
+export const readAllDotenvFiles = (environments: string[], id = '') => {
   // const dotenvCore = resolveApp(".env")
   // const dotenvFiles = environments.flat()
 
@@ -92,11 +92,11 @@ export const readAllDotenvFiles = (environments: string[], id = "") => {
     id && Object.assign(allDotenvData[id], rest)
   })
 
-  if (JSON.stringify(allDotenvData.raw) === "{}") delete allDotenvData.raw
+  if (JSON.stringify(allDotenvData.raw) === '{}') delete allDotenvData.raw
 
   return JSON.parse(JSON.stringify(allDotenvData), function (key, val) {
-    if (key.startsWith("__") && key !== id) {
-      this[key.replace(/^__[^_]+_/, "")] = val
+    if (key.startsWith('__') && key !== id) {
+      this[key.replace(/^__[^_]+_/, '')] = val
     } else {
       return val
     }

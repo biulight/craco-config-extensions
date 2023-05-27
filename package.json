@@ -27,7 +27,7 @@
     "build:doc": "jsdoc -c jsdoc.json",
     "test": "cross-env NODE_ENV=test && jest -o --collectCoverage",
     "test:all": "cross-env NODE_ENV=test && jest --collectCoverage",
-    "eslint": "eslint --fix --ext .ts src/",
+    "eslint": "eslint --fix --ext .ts src/ __test__/",
     "clean": "rimraf dist",
     "prepare": "husky install",
     "prebuild": "npm run clean && npm run test:all",
@@ -38,7 +38,7 @@
     "./{src,__test__}/**/*.ts|./*.{json,md}": [
       "prettier --write"
     ],
-    "./src/**/*.{ts,tsx}": "eslint --fix"
+    "./{src,__test__}/**/*.{ts,tsx}": "eslint --fix"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",

@@ -13,7 +13,7 @@ export default [
     input: 'src/loadRobot/index.ts',
     output: [
       {
-        file: 'dist/loadRobot/index.js',
+        file: 'dist/loadRobot/index.esm.js',
         format: "es"
       },
       {

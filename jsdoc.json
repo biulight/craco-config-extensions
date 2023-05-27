@@ -9,7 +9,7 @@
     "exclude": [
       "src/libs"
     ],
-    "includePattern": "\\.js$",
+    "includePattern": "\\.esm.js$",
     "excludePattern": "\\.d.ts"
   },
   "plugins": [

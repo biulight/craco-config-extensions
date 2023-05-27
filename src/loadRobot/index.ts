@@ -4,6 +4,11 @@ interface HtmlAttributes {
   [attributeName: string]: string | boolean | null | undefined
 }
 
+/**
+ * 静态资源加载成功的回调函数
+ * @callback resourceLoadSuccessCallback
+ */
+
 function createTag (
   tagName: string,
   attributes: HtmlAttributes,
@@ -29,6 +34,7 @@ const defaultOptional = {
 
 const ROBOT = Symbol.for('BIU_LIGHT_ROBOT_INSTANCE')
 
+/** HTML静态资源环境信息管理器，不支持使用关键字new创建 */
 class LoadRobot {
   #envConfig: Record<string, string> = {}
   #outlet = ['getEnvConfig']
@@ -70,6 +76,10 @@ class LoadRobot {
     return window[key]
   }
 
+  /**
+   * 获取唯一的域名映射器实例
+   * @returns {LoadRobot}
+   */
   static getInstance (): LoadRobot {
     // @ts-ignore
     if (!window[ROBOT]) throw new Error('LoadRobot need initialization')
@@ -78,7 +88,9 @@ class LoadRobot {
   }
 
   /**
-   * create instance
+   * 创建一个LoadRobot实列
+   * @param envMap
+   * @param optional
    */
   static createInstance (
     envMap: Record<string, any>,
@@ -92,6 +104,12 @@ class LoadRobot {
     return new LoadRobot(envMap, optional)
   }
 
+  /**
+   * 初始化LoadRobot实例
+   * @param envMap
+   * @param force
+   * @private
+   */
   #init (envMap: Record<string, any>, { force }: Optional) {
     const { hostname, pathname } = new URL(window.location.href)
     // todo 最长子序列
@@ -105,6 +123,13 @@ class LoadRobot {
     staticDomain && this.createBase(staticDomain)
   }
 
+  /**
+   * 获取pathname匹配的环境信息配置
+   * @param envMap
+   * @param hostname
+   * @param pathname
+   * @private
+   */
   #getAccordEnvConfig (
     envMap: Record<string, any>,
     { hostname, pathname }: { hostname: string; pathname: string }
@@ -124,17 +149,22 @@ class LoadRobot {
     return envMap[optimum] || {}
   }
 
+  /**
+   * 获取当前环境信息配置
+   * @returns {object}
+   */
   public getEnvConfig () {
     return this.#envConfig
   }
 
   /**
-   * load baseUrl by creating base element
-   *
+   * 在html中注入base标签
+   * @param {string} href base标签的href属性值
+   * @param {function=} success 成功插入base标签的回调
    */
-  createBase (url: string, success?: () => void) {
+  createBase (href: string, success?: () => void) {
     const baseEle = document.createElement('base')
-    baseEle.href = url
+    baseEle.href = href
 
     const header = document.getElementsByTagName('head')[0]
     // header.insertBefore(baseEle, document.currentScript!.nextElementSibling)
@@ -145,7 +175,8 @@ class LoadRobot {
 
   /**
    * load resource by creating tag element
-   *
+   * @param {string[]} list 静态资源的URL地址集合
+   * @param {resourceLoadSuccessCallback=} callback 静态资源加载完成的回调函数
    */
   static load (list: string[], callback?: () => void) {
     const fragment = document.createDocumentFragment()
@@ -172,7 +203,10 @@ class LoadRobot {
   }
 
   /**
-   * load Webpack Resource
+   * 在指定位置插入html资源，用于htmlWebpackPlugin自定义插件
+   * @param {HtmlTagObject[]} tags html-webpack-plugin
+   * @param {string} position HTML标签名，注入tags的位置
+   * @ignore
    */
   static loadOrigin (tags: HtmlTagObject[], position: string) {
     const fragment = document.createDocumentFragment()
@@ -183,6 +217,13 @@ class LoadRobot {
     document.getElementsByTagName(position)[0].appendChild(fragment)
   }
 
+  /**
+   * 动态创建script标签
+   * @param {string} url script标签的src属性
+   * @param {boolean} [auto = true] 在head标签顶部插入此script标签，true: 插入，false: 不插入
+   * @param {resourceLoadSuccessCallback=} callback 静态资源加载完成的回调函数
+   * @returns {HTMLScriptElement} script标签
+   */
   static createScript (url: string, auto: boolean = true, callback?: Function) {
     const script = document.createElement('script')
     const fn = callback || function () {}
@@ -214,6 +255,12 @@ class LoadRobot {
     return script
   }
 
+  /**
+   * 动态创建link标签
+   * @param {string} url link标签的href属性
+   * @param {boolean} [auto = true] 在head标签顶部插入此link标签，true: 插入，false: 不插入
+   * @returns {HTMLLinkElement} link标签
+   */
   static createLink (url: string, auto: boolean = true) {
     const link = document.createElement('link')
     link.setAttribute('rel', 'stylesheet')

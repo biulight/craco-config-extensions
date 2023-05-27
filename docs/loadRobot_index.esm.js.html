@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>loadRobot/index.esm.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="LoadRobot.html">LoadRobot</a><ul class='methods'><li data-type='method'><a href="LoadRobot.html#createBase">createBase</a></li><li data-type='method'><a href="LoadRobot.html#getEnvConfig">getEnvConfig</a></li><li data-type='method'><a href="LoadRobot.html#.createInstance">createInstance</a></li><li data-type='method'><a href="LoadRobot.html#.createLink">createLink</a></li><li data-type='method'><a href="LoadRobot.html#.createScript">createScript</a></li><li data-type='method'><a href="LoadRobot.html#.getInstance">getInstance</a></li><li data-type='method'><a href="LoadRobot.html#.load">load</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#addDefinitionsEnvValue">addDefinitionsEnvValue</a></li><li><a href="global.html#addSplitChunksPlugin">addSplitChunksPlugin</a></li><li><a href="global.html#getType">getType</a></li><li><a href="global.html#getWebpackPlugin">getWebpackPlugin</a></li><li><a href="global.html#insertStringAfter">insertStringAfter</a></li><li><a href="global.html#insertStringBefore">insertStringBefore</a></li><li><a href="global.html#modifyOutputConfig">modifyOutputConfig</a></li><li><a href="global.html#override">override</a></li><li><a href="global.html#readAllDotenvFiles">readAllDotenvFiles</a></li><li><a href="global.html#readDotenvFiles">readDotenvFiles</a></li><li><a href="global.html#resolveApp">resolveApp</a></li><li><a href="global.html#writeConfigForDebug">writeConfigForDebug</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">loadRobot/index.esm.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * 静态资源加载成功的回调函数
+ * @callback resourceLoadSuccessCallback
+ */
+function createTag(tagName, attributes, position) {
+  const tag = document.createElement(tagName);
+  for (const key in attributes) {
+    if (!Object.hasOwn(attributes, key)) continue;
+    tag.setAttribute(key, attributes[key]);
+  }
+  position &amp;&amp; document.getElementsByTagName(position)[0].appendChild(tag);
+  return tag;
+}
+const defaultOptional = {
+  key: 'BIU_LIGHT_ROBOT_INSTANCE'
+};
+const ROBOT = Symbol.for('BIU_LIGHT_ROBOT_INSTANCE');
+/** HTML静态资源环境信息管理器，不支持使用关键字new创建 */
+class LoadRobot {
+  #envConfig = {};
+  #outlet = ['getEnvConfig'];
+  #proxyHandler = {
+    get(target, propKey, receiver) {
+      // if (target.#outlet.includes(propKey)) return Reflect.get(target, propKey, receiver)
+      if (target.#outlet.includes(propKey)) {
+        return Reflect.get(target, propKey).bind(target);
+      }
+      return target.#envConfig[propKey];
+      // return Reflect.get(target, propKey)
+    }
+  };
+
+  static #permit = false;
+  constructor(envMap, optional
+  // key: string = "BIU_LIGHT_ROBOT_INSTANCE"
+  ) {
+    if (!LoadRobot.#permit) {
+      throw new Error("LoadRobot only supports instantiation through the static method 'createInstance' ");
+    }
+    // optional ||= defaultOptional
+    // 初始化
+    this.#init(envMap, optional);
+    // 挂载
+    const {
+      key
+    } = optional;
+    // @ts-ignore
+    window[key] = new Proxy(this, this.#proxyHandler);
+    // @ts-ignore
+    window[ROBOT] = key;
+    LoadRobot.#permit = false;
+    // @ts-ignore
+    return window[key];
+  }
+  /**
+   * 获取唯一的域名映射器实例
+   * @returns {LoadRobot}
+   */
+  static getInstance() {
+    // @ts-ignore
+    if (!window[ROBOT]) throw new Error('LoadRobot need initialization');
+    // @ts-ignore
+    return window[window[ROBOT]];
+  }
+  /**
+   * 创建一个LoadRobot实列
+   * @param envMap
+   * @param optional
+   */
+  static createInstance(envMap, optional
+  // key = "BIU_LIGHT_ROBOT_INSTANCE"
+  ) {
+    const {
+      key
+    } = optional ||= defaultOptional;
+    // @ts-ignore
+    if (window[key]) return window[key];
+    this.#permit = true;
+    return new LoadRobot(envMap, optional);
+  }
+  /**
+   * 初始化LoadRobot实例
+   * @param envMap
+   * @param force
+   * @private
+   */
+  #init(envMap, {
+    force
+  }) {
+    const {
+      hostname,
+      pathname
+    } = new URL(window.location.href);
+    // todo 最长子序列
+    this.#envConfig = force ? this.#getAccordEnvConfig(envMap, {
+      hostname,
+      pathname
+    }) : envMap[hostname] || {};
+    const staticDomain = this.#envConfig.STATIC_DOMAIN;
+    staticDomain &amp;&amp; this.createBase(staticDomain);
+  }
+  /**
+   * 获取pathname匹配的环境信息配置
+   * @param envMap
+   * @param hostname
+   * @param pathname
+   * @private
+   */
+  #getAccordEnvConfig(envMap, {
+    hostname,
+    pathname
+  }) {
+    let optimum = '';
+    for (const key in envMap) {
+      if (!Object.hasOwn(envMap, key)) continue;
+      // 自身属性
+      if (!key.startsWith(hostname)) continue;
+      // hostname符合
+      const restStr = key.slice(hostname.length);
+      if (pathname.startsWith(restStr)) {
+        optimum = key;
+        break;
+      }
+    }
+    return envMap[optimum] || {};
+  }
+  /**
+   * 获取当前环境信息配置
+   * @returns {object}
+   */
+  getEnvConfig() {
+    return this.#envConfig;
+  }
+  /**
+   * 在html中注入base标签
+   * @param {string} href base标签的href属性值
+   * @param {function=} success 成功插入base标签的回调
+   */
+  createBase(href, success) {
+    const baseEle = document.createElement('base');
+    baseEle.href = href;
+    const header = document.getElementsByTagName('head')[0];
+    // header.insertBefore(baseEle, document.currentScript!.nextElementSibling)
+    header.insertBefore(baseEle, header.firstElementChild);
+    // load successfully
+    success &amp;&amp; success();
+  }
+  /**
+   * load resource by creating tag element
+   * @param {string[]} list 静态资源的URL地址集合
+   * @param {resourceLoadSuccessCallback=} callback 静态资源加载完成的回调函数
+   */
+  static load(list, callback) {
+    const fragment = document.createDocumentFragment();
+    let readyLoadNum = list.length;
+    const updateFunc = () => {
+      readyLoadNum--;
+      if (readyLoadNum === 0 &amp;&amp; callback) callback();
+    };
+    for (const url of list) {
+      if (url.endsWith('.js')) {
+        fragment.appendChild(LoadRobot.createScript(url, false, updateFunc));
+      }
+      if (url.endsWith('.css')) {
+        readyLoadNum--;
+        fragment.appendChild(LoadRobot.createLink(url, false));
+      }
+    }
+    const currentScript = document.currentScript;
+    currentScript?.parentElement?.insertBefore(fragment, currentScript.nextElementSibling);
+  }
+  /**
+   * 在指定位置插入html资源，用于htmlWebpackPlugin自定义插件
+   * @param {HtmlTagObject[]} tags html-webpack-plugin
+   * @param {string} position HTML标签名，注入tags的位置
+   * @ignore
+   */
+  static loadOrigin(tags, position) {
+    const fragment = document.createDocumentFragment();
+    for (const tag of tags) {
+      const {
+        tagName,
+        attributes
+      } = tag;
+      fragment.appendChild(createTag(tagName, attributes));
+    }
+    document.getElementsByTagName(position)[0].appendChild(fragment);
+  }
+  /**
+   * 动态创建script标签
+   * @param {string} url script标签的src属性
+   * @param {boolean} [auto = true] 在head标签顶部插入此script标签，true: 插入，false: 不插入
+   * @param {resourceLoadSuccessCallback=} callback 静态资源加载完成的回调函数
+   * @returns {HTMLScriptElement} script标签
+   */
+  static createScript(url, auto = true, callback) {
+    const script = document.createElement('script');
+    const fn = callback || function () {};
+    script.setAttribute('type', 'text/javascript');
+    // @ts-ignore
+    if (script.readyState) {
+      // @ts-ignore
+      script.onreadystatechange = function () {
+        if (
+        // @ts-ignore
+        script.readyState === 'loaded' ||
+        // @ts-ignore
+        script.readyState === 'complete') {
+          // @ts-ignore
+          script.onreadystatechange = null;
+          fn();
+        }
+      };
+    } else {
+      // 其他现代浏览器
+      script.onload = function () {
+        fn();
+      };
+    }
+    script.src = url;
+    auto &amp;&amp; document.getElementsByTagName('head')[0].appendChild(script);
+    return script;
+  }
+  /**
+   * 动态创建link标签
+   * @param {string} url link标签的href属性
+   * @param {boolean} [auto = true] 在head标签顶部插入此link标签，true: 插入，false: 不插入
+   * @returns {HTMLLinkElement} link标签
+   */
+  static createLink(url, auto = true) {
+    const link = document.createElement('link');
+    link.setAttribute('rel', 'stylesheet');
+    link.setAttribute('type', 'text/css');
+    link.setAttribute('href', url);
+    auto &amp;&amp; document.getElementsByTagName('head')[0].appendChild(link);
+    return link;
+  }
+}
+// export default LoadRobot.createInstance({
+//   ...process.env.DYNAMIC_ENV
+// })
+
+export { LoadRobot as default };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sat May 27 2023 20:24:41 GMT+0800 (中国标准时间) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

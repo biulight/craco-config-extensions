@@ -4,10 +4,6 @@
 # testing
 /coverage
 
-# jsdoc
-/out
-/docs
-
 # production
 /dist
 

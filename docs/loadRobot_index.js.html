@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>loadRobot/index.esm.js - Documentation</title>
+    <title>loadRobot/index.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -29,13 +29,13 @@
 <nav >
     
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="LoadRobot.html">LoadRobot</a><ul class='methods'><li data-type='method'><a href="LoadRobot.html#getEnvConfig">getEnvConfig</a></li><li data-type='method'><a href="LoadRobot.html#.createInstance">createInstance</a></li><li data-type='method'><a href="LoadRobot.html#.createLink">createLink</a></li><li data-type='method'><a href="LoadRobot.html#.createScript">createScript</a></li><li data-type='method'><a href="LoadRobot.html#.getInstance">getInstance</a></li><li data-type='method'><a href="LoadRobot.html#.load">load</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-sass-resources-loader.html">sass-resources-loader</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addDefinitionsEnvValue">addDefinitionsEnvValue</a></li><li><a href="global.html#addSplitChunksPlugin">addSplitChunksPlugin</a></li><li><a href="global.html#getType">getType</a></li><li><a href="global.html#getWebpackPlugin">getWebpackPlugin</a></li><li><a href="global.html#insertStringAfter">insertStringAfter</a></li><li><a href="global.html#insertStringBefore">insertStringBefore</a></li><li><a href="global.html#modifyOutputConfig">modifyOutputConfig</a></li><li><a href="global.html#override">override</a></li><li><a href="global.html#readAllDotenvFiles">readAllDotenvFiles</a></li><li><a href="global.html#readDotenvFiles">readDotenvFiles</a></li><li><a href="global.html#resolveApp">resolveApp</a></li><li><a href="global.html#writeConfigForDebug">writeConfigForDebug</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="LoadRobot.html">LoadRobot</a><ul class='methods'><li data-type='method'><a href="LoadRobot.html#createBase">createBase</a></li><li data-type='method'><a href="LoadRobot.html#createBase">createBase</a></li><li data-type='method'><a href="LoadRobot.html#.createInstance">createInstance</a></li><li data-type='method'><a href="LoadRobot.html#.createInstance">createInstance</a></li><li data-type='method'><a href="LoadRobot.html#.getInstance">getInstance</a></li><li data-type='method'><a href="LoadRobot.html#.getInstance">getInstance</a></li><li data-type='method'><a href="LoadRobot.html#.load">load</a></li><li data-type='method'><a href="LoadRobot.html#.load">load</a></li><li data-type='method'><a href="LoadRobot.html#.loadOrigin">loadOrigin</a></li><li data-type='method'><a href="LoadRobot.html#.loadOrigin">loadOrigin</a></li></ul></li><li></li></ul><h3>Global</h3><ul><li><a href="global.html#addDefinitionsEnvValue">addDefinitionsEnvValue</a></li><li><a href="global.html#addSplitChunksPlugin">addSplitChunksPlugin</a></li><li><a href="global.html#getType">getType</a></li><li><a href="global.html#getWebpackPlugin">getWebpackPlugin</a></li><li><a href="global.html#insertStringAfter">insertStringAfter</a></li><li><a href="global.html#insertStringBefore">insertStringBefore</a></li><li><a href="global.html#modifyOutputConfig">modifyOutputConfig</a></li><li><a href="global.html#override">override</a></li><li><a href="global.html#readAllDotenvFiles">readAllDotenvFiles</a></li><li><a href="global.html#readDotenvFiles">readDotenvFiles</a></li><li><a href="global.html#resolveApp">resolveApp</a></li><li><a href="global.html#writeConfigForDebug">writeConfigForDebug</a></li></ul>
     
 </nav>
 
 <div id="main">
     
-    <h1 class="page-title">loadRobot/index.esm.js</h1>
+    <h1 class="page-title">loadRobot/index.js</h1>
     
 
     
@@ -45,11 +45,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
- * 静态资源加载成功的回调函数
- * @callback resourceLoadSuccessCallback
- */
-function createTag(tagName, attributes, position) {
+            <pre class="prettyprint source linenums"><code>function createTag(tagName, attributes, position) {
   const tag = document.createElement(tagName);
   for (const key in attributes) {
     if (!Object.hasOwn(attributes, key)) continue;
@@ -59,11 +55,10 @@ function createTag(tagName, attributes, position) {
   return tag;
 }
 const defaultOptional = {
-  key: 'BIU_LIGHT_ROBOT_INSTANCE',
-  force: false
+  key: 'BIU_LIGHT_ROBOT_INSTANCE'
 };
 const ROBOT = Symbol.for('BIU_LIGHT_ROBOT_INSTANCE');
-/** HTML静态资源环境信息管理器 */
+/** Class load robot */
 class LoadRobot {
   #envConfig = {};
   #outlet = ['getEnvConfig'];
@@ -79,15 +74,9 @@ class LoadRobot {
   };
 
   static #permit = false;
-  /**
-   * 仅支持通过静态方法createInstance实例化LoadRobot类
-   * @param {Object.&lt;string, Object>}envMap 环境配置
-   * @param {Object} optional
-   * @param {string} [optional.key = "BIU_LIGHT_ROBOT_INSTANCE"] 挂载在window对象上的loadrobot实例的标识
-   * @param {boolean} [optional.force = false] 环境信息根据pathname匹配；（true: 开启；false: 忽略pathname）
-   * @hideconstructor
-   */
-  constructor(envMap, optional) {
+  constructor(envMap, optional
+  // key: string = "BIU_LIGHT_ROBOT_INSTANCE"
+  ) {
     if (!LoadRobot.#permit) {
       throw new Error("LoadRobot only supports instantiation through the static method 'createInstance' ");
     }
@@ -107,8 +96,7 @@ class LoadRobot {
     return window[key];
   }
   /**
-   * 获取唯一的域名映射器实例
-   * @returns {LoadRobot} The LoadRobot instance.
+   * 获取唯一实例
    */
   static getInstance() {
     // @ts-ignore
@@ -117,33 +105,19 @@ class LoadRobot {
     return window[window[ROBOT]];
   }
   /**
-   * 创建一个LoadRobot实列
-   * @param {Object.&lt;string, Object>}envMap 环境配置
-   * @param {Object} optional
-   * @param {string} [optional.key = "BIU_LIGHT_ROBOT_INSTANCE"] 挂载在window对象上的loadrobot实例的标识
-   * @param {boolean} [optional.force = false] 环境信息根据pathname匹配；（true: 开启；false: 忽略pathname）
+   * create instance
    */
   static createInstance(envMap, optional
   // key = "BIU_LIGHT_ROBOT_INSTANCE"
   ) {
-    const _optional = {
-      ...defaultOptional,
-      ...optional
-    };
     const {
       key
-    } = _optional;
+    } = optional ||= defaultOptional;
     // @ts-ignore
     if (window[key]) return window[key];
     this.#permit = true;
-    return new LoadRobot(envMap, _optional);
+    return new LoadRobot(envMap, optional);
   }
-  /**
-   * 初始化LoadRobot实例
-   * @param envMap
-   * @param force
-   * @private
-   */
   #init(envMap, {
     force
   }) {
@@ -157,15 +131,8 @@ class LoadRobot {
       pathname
     }) : envMap[hostname] || {};
     const staticDomain = this.#envConfig.STATIC_DOMAIN;
-    staticDomain &amp;&amp; this.#createBase(staticDomain);
+    staticDomain &amp;&amp; this.createBase(staticDomain);
   }
-  /**
-   * 获取pathname匹配的环境信息配置
-   * @param envMap
-   * @param hostname
-   * @param pathname
-   * @private
-   */
   #getAccordEnvConfig(envMap, {
     hostname,
     pathname
@@ -184,21 +151,16 @@ class LoadRobot {
     }
     return envMap[optimum] || {};
   }
-  /**
-   * 获取当前环境信息配置
-   * @returns {Object.&lt;string, string>}
-   */
   getEnvConfig() {
     return this.#envConfig;
   }
   /**
-   * 在html文件的head标签顶部注入base标签
-   * @param {string} href base标签的href属性值
-   * @param {function=} success 成功插入base标签的回调
+   * load baseUrl by creating base element
+   *
    */
-  #createBase(href, success) {
+  createBase(url, success) {
     const baseEle = document.createElement('base');
-    baseEle.href = href;
+    baseEle.href = url;
     const header = document.getElementsByTagName('head')[0];
     // header.insertBefore(baseEle, document.currentScript!.nextElementSibling)
     header.insertBefore(baseEle, header.firstElementChild);
@@ -207,8 +169,7 @@ class LoadRobot {
   }
   /**
    * load resource by creating tag element
-   * @param {string[]} list 静态资源的URL地址集合
-   * @param {resourceLoadSuccessCallback=} callback 静态资源加载完成的回调函数
+   *
    */
   static load(list, callback) {
     const fragment = document.createDocumentFragment();
@@ -230,10 +191,7 @@ class LoadRobot {
     currentScript?.parentElement?.insertBefore(fragment, currentScript.nextElementSibling);
   }
   /**
-   * 在指定位置插入html资源，用于htmlWebpackPlugin自定义插件
-   * @param {HtmlTagObject[]} tags html-webpack-plugin
-   * @param {string} position HTML标签名，注入tags的位置
-   * @ignore
+   * load Webpack Resource
    */
   static loadOrigin(tags, position) {
     const fragment = document.createDocumentFragment();
@@ -246,13 +204,6 @@ class LoadRobot {
     }
     document.getElementsByTagName(position)[0].appendChild(fragment);
   }
-  /**
-   * 动态创建script标签
-   * @param {string} url script标签的src属性
-   * @param {boolean} [auto = true] 在head标签顶部插入此script标签，true: 插入，false: 不插入
-   * @param {resourceLoadSuccessCallback=} callback 静态资源加载完成的回调函数
-   * @returns {HTMLScriptElement} script标签
-   */
   static createScript(url, auto = true, callback) {
     const script = document.createElement('script');
     const fn = callback || function () {};
@@ -281,12 +232,6 @@ class LoadRobot {
     auto &amp;&amp; document.getElementsByTagName('head')[0].appendChild(script);
     return script;
   }
-  /**
-   * 动态创建link标签
-   * @param {string} url link标签的href属性
-   * @param {boolean} [auto = true] 在head标签顶部插入此link标签，true: 插入，false: 不插入
-   * @returns {HTMLLinkElement} link标签
-   */
   static createLink(url, auto = true) {
     const link = document.createElement('link');
     link.setAttribute('rel', 'stylesheet');
@@ -315,7 +260,7 @@ export { LoadRobot as default };
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Fri Jun 16 2023 23:59:15 GMT+0800 (China Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Fri May 26 2023 17:28:03 GMT+0800 (China Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

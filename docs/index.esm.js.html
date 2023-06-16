@@ -29,7 +29,7 @@
 <nav >
     
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="LoadRobot.html">LoadRobot</a><ul class='methods'><li data-type='method'><a href="LoadRobot.html#getEnvConfig">getEnvConfig</a></li><li data-type='method'><a href="LoadRobot.html#.createInstance">createInstance</a></li><li data-type='method'><a href="LoadRobot.html#.createLink">createLink</a></li><li data-type='method'><a href="LoadRobot.html#.createScript">createScript</a></li><li data-type='method'><a href="LoadRobot.html#.getInstance">getInstance</a></li><li data-type='method'><a href="LoadRobot.html#.load">load</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#addDefinitionsEnvValue">addDefinitionsEnvValue</a></li><li><a href="global.html#addSplitChunksPlugin">addSplitChunksPlugin</a></li><li><a href="global.html#getType">getType</a></li><li><a href="global.html#getWebpackPlugin">getWebpackPlugin</a></li><li><a href="global.html#insertStringAfter">insertStringAfter</a></li><li><a href="global.html#insertStringBefore">insertStringBefore</a></li><li><a href="global.html#modifyOutputConfig">modifyOutputConfig</a></li><li><a href="global.html#override">override</a></li><li><a href="global.html#readAllDotenvFiles">readAllDotenvFiles</a></li><li><a href="global.html#readDotenvFiles">readDotenvFiles</a></li><li><a href="global.html#resolveApp">resolveApp</a></li><li><a href="global.html#writeConfigForDebug">writeConfigForDebug</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="LoadRobot.html">LoadRobot</a><ul class='methods'><li data-type='method'><a href="LoadRobot.html#getEnvConfig">getEnvConfig</a></li><li data-type='method'><a href="LoadRobot.html#.createInstance">createInstance</a></li><li data-type='method'><a href="LoadRobot.html#.createLink">createLink</a></li><li data-type='method'><a href="LoadRobot.html#.createScript">createScript</a></li><li data-type='method'><a href="LoadRobot.html#.getInstance">getInstance</a></li><li data-type='method'><a href="LoadRobot.html#.load">load</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-sass-resources-loader.html">sass-resources-loader</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addDefinitionsEnvValue">addDefinitionsEnvValue</a></li><li><a href="global.html#addSplitChunksPlugin">addSplitChunksPlugin</a></li><li><a href="global.html#getType">getType</a></li><li><a href="global.html#getWebpackPlugin">getWebpackPlugin</a></li><li><a href="global.html#insertStringAfter">insertStringAfter</a></li><li><a href="global.html#insertStringBefore">insertStringBefore</a></li><li><a href="global.html#modifyOutputConfig">modifyOutputConfig</a></li><li><a href="global.html#override">override</a></li><li><a href="global.html#readAllDotenvFiles">readAllDotenvFiles</a></li><li><a href="global.html#readDotenvFiles">readDotenvFiles</a></li><li><a href="global.html#resolveApp">resolveApp</a></li><li><a href="global.html#writeConfigForDebug">writeConfigForDebug</a></li></ul>
     
 </nav>
 
@@ -47,6 +47,7 @@
         <article>
             <pre class="prettyprint source linenums"><code>import path from 'node:path';
 import fs from 'node:fs';
+import { getLoader, loaderByName, addAfterLoader } from '@craco/craco';
 
 const appDirectory = fs.realpathSync(process.cwd());
 /** load file */
@@ -352,7 +353,43 @@ const override = (...plugins) => plugins.filter(f => f).reduce((pre, cur) => {
   };
 });
 
-export { HtmlWebpackInjectHead, HtmlWebpackMixinRobot, addDefinitionsEnvValue, addHtmlWebpackPlugin, addInterpolateHtmlPlugin, addSplitChunksPlugin, modifyOutputConfig, override, readAllDotenvFiles, readDotenvFiles, stringifyVal, writeConfigForDebug };
+/**
+ * @description sass-resources-loader的craco版本插件
+ * @exports sass-resources-loader
+ * @version 1.0.1
+ * @example &lt;caption>craco.config.js&lt;/caption>
+ * const { sassResourcesLoader } = '@biulight/craco-config-extensions'
+ *
+ * module.exports = {
+ *   plugins: [
+ *     {
+ *       plugin: sassResourcesLoader,
+ *       options: {
+ *         resources: 'example/a.scss'
+ *       }
+ *     }
+ *   ]
+ * }
+ */
+var sassResourcesLoader = {
+  overrideWebpackConfig: ({
+    webpackConfig,
+    pluginOptions
+  }) => {
+    const {
+      isFound
+    } = getLoader(webpackConfig, loaderByName('sass-loader'));
+    if (isFound) {
+      addAfterLoader(webpackConfig, loaderByName('sass-loader'), {
+        loader: 'sass-resources-loader',
+        options: pluginOptions
+      });
+    }
+    return webpackConfig;
+  }
+};
+
+export { HtmlWebpackInjectHead, HtmlWebpackMixinRobot, addDefinitionsEnvValue, addHtmlWebpackPlugin, addInterpolateHtmlPlugin, addSplitChunksPlugin, modifyOutputConfig, override, readAllDotenvFiles, readDotenvFiles, sassResourcesLoader, stringifyVal, writeConfigForDebug };
 </code></pre>
         </article>
     </section>
@@ -367,7 +404,7 @@ export { HtmlWebpackInjectHead, HtmlWebpackMixinRobot, addDefinitionsEnvValue, a
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sun May 28 2023 02:39:12 GMT+0800 (中国标准时间) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Fri Jun 16 2023 23:59:15 GMT+0800 (China Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

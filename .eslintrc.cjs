@@ -9,7 +9,7 @@ module.exports = {
   env: {
   },
   globals: {
-    __DEV__: false,
+    __DEV__: false, // 禁用
 
   }
 }

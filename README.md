@@ -50,6 +50,26 @@ yarn add --dev @biulight/craco-config-extensions
 
 ##### `HtmlWebpackMixinRobot`
 
+#### cracoPlugin
+
+##### `sassResourcesLoader`
+
+> `sass-resources-loader` 的 `craco` 版本
+
+```js
+const { sassResourcesLoader } = require(`@biulight/craco-config-extensions`)
+
+module.exports = {
+  plugins: [
+    {
+      plugin: sassResourcesLoader,
+      options: {
+        resources: 'src/common/index.scss'
+      }
+    }
+  ],
+}
+```
 
 #### 工具函数
 

@@ -5,6 +5,7 @@ import { loaderByName, getLoader, addAfterLoader } from '@craco/craco'
  * @description sass-resources-loader的craco版本插件
  * @exports sass-resources-loader
  * @version 1.0.1
+ * @see {@link https://github.com/shakacode/sass-resources-loader#readme}
  * @example <caption>craco.config.js</caption>
  * const { sassResourcesLoader } = '@biulight/craco-config-extensions'
  *

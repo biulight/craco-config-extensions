@@ -23,7 +23,7 @@ export default {
   // collectCoverageFrom: undefined,
 
   // The directory where Jest should output its coverage files
-  coverageDirectory: "coverage",
+  coverageDirectory: 'coverage',
 
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [
@@ -31,7 +31,7 @@ export default {
   // ],
 
   // Indicates which provider should be used to instrument code for coverage
-  coverageProvider: "v8",
+  coverageProvider: 'v8',
 
   // A list of reporter names that Jest uses when writing coverage reports
   // coverageReporters: [
@@ -77,19 +77,19 @@ export default {
 
   // An array of file extensions your modules use
   moduleFileExtensions: [
-    "js",
-  //   "mjs",
-  //   "cjs",
-  //   "jsx",
-    "ts",
-  //   "tsx",
-  //   "json",
-  //   "node"
+    'js',
+    //   "mjs",
+    //   "cjs",
+    //   "jsx",
+    'ts'
+    //   "tsx",
+    //   "json",
+    //   "node"
   ],
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   moduleNameMapper: {
-    "@/(.*)$": "<rootDir>/src/$1"
+    '@/(.*)$': '<rootDir>/src/$1'
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -146,7 +146,7 @@ export default {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: "jest-environment-node",
+  testEnvironment: 'jest-environment-node',
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
@@ -176,8 +176,8 @@ export default {
 
   // A map from regular expressions to paths to transformers
   transform: {
-    '\\.[jt]sx?$': 'babel-jest',
-  },
+    '\\.[jt]sx?$': 'babel-jest'
+  }
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [
@@ -196,4 +196,4 @@ export default {
 
   // Whether to use watchman for file crawling
   // watchman: true,
-};
+}

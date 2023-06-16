@@ -19,8 +19,8 @@
 // }
 module.exports = {
   presets: [
-    ["@babel/preset-env", { targets: { node: "current" } }],
-    "@babel/preset-typescript",
+    ['@babel/preset-env', { targets: { node: 'current' } }],
+    '@babel/preset-typescript'
   ],
   // todo 测试下环境变量配置plugin是否可用
   // test: {
@@ -29,7 +29,7 @@ module.exports = {
   overrides: [
     {
       test: '__test__',
-      plugins: [["babel-plugin-transform-import-meta", { module: "ES6" }]],
+      plugins: [['babel-plugin-transform-import-meta', { module: 'ES6' }]]
     }
   ]
 }

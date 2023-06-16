@@ -78,6 +78,7 @@
     "webpack": "^5.75.0"
   },
   "dependencies": {
+    "@craco/craco": "^7.1.0",
     "@types/node": "^20.2.3",
     "dotenv": "^16.0.3",
     "html-webpack-plugin": "^5.5.0"

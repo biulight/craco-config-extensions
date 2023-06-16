@@ -76,6 +76,6 @@ export default [
         babelHelpers: 'bundled'
       })
     ],
-    external: ['dotenv', 'html-webpack-plugin']
+    external: ['dotenv', 'html-webpack-plugin', '@craco/craco']
   }
 ]

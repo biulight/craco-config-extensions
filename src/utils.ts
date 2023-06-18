@@ -35,6 +35,7 @@ export const getType = (target: unknown) => {
  * @param needle inserted position
  * @param insertedString
  * @returns {string} concatenated string
+ * @ignore
  */
 export const insertStringAfter = (
   haystack: string,
@@ -57,6 +58,7 @@ export const insertStringAfter = (
  * @param needle inserted position
  * @param insertedString
  * @returns {string} concatenated string
+ * @ignore
  */
 export const insertStringBefore = (
   haystack: string,

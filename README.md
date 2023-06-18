@@ -1,6 +1,6 @@
 # @biulight/craco-config-extensions
 
-> 用于快速配置 craco.config.js 文件，支持基于访问域名动态映射静态资源加载域名
+> 用于快速配置 craco.config.js 文件，支持基于文档地址动态指定文档中URL资源地址
 
 ## Requirements
 
@@ -31,7 +31,7 @@ yarn add --dev @biulight/craco-config-extensions
 
 修改`webpack`的`output`配置
 
-##### `addInterpolateHtmlPlugin`
+##### `addDefinitionsEnvValue`
 
 修改`DefinePlugin`插件
 

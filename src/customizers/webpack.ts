@@ -55,6 +55,11 @@ export const addHtmlWebpackPlugin =
     return config
   }
 
+/**
+ * 支持修改 `interpolate-html-plugin` 插件的配置
+ * @param value `interpolate-html-plugin` 配置
+ * @see {@link https://github.com/egoist/interpolate-html-plugin#readme}
+ */
 export const addInterpolateHtmlPlugin =
   (value: any) => (config: Configuration) => {
     const plugin = getWebpackPlugin(config.plugins, 'InterpolateHtmlPlugin')

@@ -3,7 +3,6 @@ import { resolveApp } from '@/utils'
 
 export { default as HtmlWebpackInjectHead } from './htmlWebpackInjectHead'
 export { default as HtmlWebpackMixinRobot } from './htmlWebpackMixinRobot'
-// import type { Configuration } from "webpack"
 
 /**
  * read env config file.the rule like create-react-env
@@ -115,7 +114,9 @@ export const stringifyVal = (target: Record<string, any>) => {
 
 /**
  * override configure by combine a list of function that used for modifing
- * */
+ * @param plugins {Function[]} 配置项
+ * @returns 合并的配置项
+ */
 export const override = (...plugins: (Function | false)[]) =>
   (plugins.filter((f) => f) as Function[]).reduce((pre, cur) => {
     return (webpackConfig: any, extra = {}) => {

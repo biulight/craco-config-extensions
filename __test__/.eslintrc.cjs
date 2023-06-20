@@ -1,17 +1,17 @@
 module.exports = {
-  parser: "@typescript-eslint/parser",
-  plugins: ["@typescript-eslint"],
+  parser: '@typescript-eslint/parser',
+  plugins: ['@typescript-eslint'],
   extends: [
     'semistandard',
     'standard'
   ],
-  ignorePatterns: ["**/*.d.ts"],
+  ignorePatterns: ['**/*.d.ts'],
   env: {
   },
   globals: {
-    __DEV__: "readonly",
-    describe: "readonly",
-    it: "readonly",
-    expect: "readonly"
+    __DEV__: 'readonly',
+    describe: 'readonly',
+    it: 'readonly',
+    expect: 'readonly'
   }
 }

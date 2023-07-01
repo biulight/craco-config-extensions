@@ -29,7 +29,7 @@
 <nav >
     
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="LoadRobot.html">LoadRobot</a><ul class='methods'><li data-type='method'><a href="LoadRobot.html#getEnvConfig">getEnvConfig</a></li><li data-type='method'><a href="LoadRobot.html#.createInstance">createInstance</a></li><li data-type='method'><a href="LoadRobot.html#.createLink">createLink</a></li><li data-type='method'><a href="LoadRobot.html#.createScript">createScript</a></li><li data-type='method'><a href="LoadRobot.html#.getInstance">getInstance</a></li><li data-type='method'><a href="LoadRobot.html#.load">load</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-sass-resources-loader.html">sass-resources-loader</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addDefinitionsEnvValue">addDefinitionsEnvValue</a></li><li><a href="global.html#addSplitChunksPlugin">addSplitChunksPlugin</a></li><li><a href="global.html#getType">getType</a></li><li><a href="global.html#getWebpackPlugin">getWebpackPlugin</a></li><li><a href="global.html#insertStringAfter">insertStringAfter</a></li><li><a href="global.html#insertStringBefore">insertStringBefore</a></li><li><a href="global.html#modifyOutputConfig">modifyOutputConfig</a></li><li><a href="global.html#override">override</a></li><li><a href="global.html#readAllDotenvFiles">readAllDotenvFiles</a></li><li><a href="global.html#readDotenvFiles">readDotenvFiles</a></li><li><a href="global.html#resolveApp">resolveApp</a></li><li><a href="global.html#writeConfigForDebug">writeConfigForDebug</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="LoadRobot.html">LoadRobot</a><ul class='methods'><li data-type='method'><a href="LoadRobot.html#getEnvConfig">getEnvConfig</a></li><li data-type='method'><a href="LoadRobot.html#.createInstance">createInstance</a></li><li data-type='method'><a href="LoadRobot.html#.createLink">createLink</a></li><li data-type='method'><a href="LoadRobot.html#.createScript">createScript</a></li><li data-type='method'><a href="LoadRobot.html#.getInstance">getInstance</a></li><li data-type='method'><a href="LoadRobot.html#.load">load</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-sass-resources-loader.html">sass-resources-loader</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addDefinitionsEnvValue">addDefinitionsEnvValue</a></li><li><a href="global.html#addHtmlWebpackPlugin">addHtmlWebpackPlugin</a></li><li><a href="global.html#addInterpolateHtmlPlugin">addInterpolateHtmlPlugin</a></li><li><a href="global.html#addSplitChunksPlugin">addSplitChunksPlugin</a></li><li><a href="global.html#modifyOutputConfig">modifyOutputConfig</a></li><li><a href="global.html#override">override</a></li><li><a href="global.html#readAllDotenvFiles">readAllDotenvFiles</a></li><li><a href="global.html#readDotenvFiles">readDotenvFiles</a></li><li><a href="global.html#writeConfigForDebug">writeConfigForDebug</a></li></ul>
     
 </nav>
 
@@ -45,14 +45,27 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import path from 'node:path';
+            <pre class="prettyprint source linenums"><code>import { merge } from 'lodash';
+import path from 'node:path';
 import fs from 'node:fs';
 import { getLoader, loaderByName, addAfterLoader } from '@craco/craco';
 
 const appDirectory = fs.realpathSync(process.cwd());
-/** load file */
+/**
+ * get the path of file
+ * @param relativePath 文件的相对路径
+ * @returns 文件的绝对路径
+ * @ignore
+ */
 const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
-/** look for webpack plugin that you expect */
+/**
+ * look for webpack plugin that you expect
+ * @param plugins {Plugin[]} 已注册的webpack插件集合
+ * @param pluginName 插件名
+ * @param id 匹配插件名的所有插件的可选下标
+ * @returns 精准匹配的插件
+ * @ignore
+ */
 const getWebpackPlugin = (plugins = [], pluginName, id = 0) => {
   if (id === 0) {
     return plugins.find(plugin => plugin.constructor.name === pluginName);
@@ -61,7 +74,12 @@ const getWebpackPlugin = (plugins = [], pluginName, id = 0) => {
   if (id > sets.length) throw new Error('Function getWebpackPlugin');
   return sets[id];
 };
-/** get target type */
+/**
+ * get target type
+ * @param target 目标
+ * @returns 类型
+ * @ignore
+ */
 const getType = target => {
   return Object.prototype.toString.call(target).slice(8, -1).toLocaleLowerCase();
 };
@@ -71,6 +89,7 @@ const getType = target => {
  * @param needle inserted position
  * @param insertedString
  * @returns {string} concatenated string
+ * @ignore
  */
 const insertStringAfter = (haystack, needle, insertedString) => {
   if (!insertedString) return haystack;
@@ -88,6 +107,7 @@ const insertStringAfter = (haystack, needle, insertedString) => {
  * @param needle inserted position
  * @param insertedString
  * @returns {string} concatenated string
+ * @ignore
  */
 const insertStringBefore = (haystack, needle, insertedString) => {
   if (!insertedString) return haystack;
@@ -99,7 +119,6 @@ const insertStringBefore = (haystack, needle, insertedString) => {
   return haystack.slice(0, index) + insertedString + haystack.slice(index);
 };
 
-// import fs from 'node:fs'
 /**
  * For debugging,write config to webpack.config.json file
  */
@@ -131,20 +150,31 @@ const addDefinitionsEnvValue = value => config => {
   };
   return config;
 };
+/**
+ * 修改`html-webpack-plugin` 插件配置
+ * @param value 配置
+ * @param {number} [id] - HtmlWebpackPlugin插件数组中的位置
+ * @returns a function that takes in the original config as the first argument (and optionally a context object) and returns the new config
+ * @since 1.0.2
+ * @version 1.0.2
+ */
 const addHtmlWebpackPlugin = (value, id) => config => {
   const plugin = getWebpackPlugin(config.plugins, 'HtmlWebpackPlugin', id);
   if (!plugin) throw new Error("HtmlWebpackPlugin don't exist!");
-  Object.assign(plugin, value);
-  console.log(plugin, 'htmlwebpackplugin');
-  // const
+  merge(plugin, value);
   return config;
 };
+/**
+ * 支持修改 `interpolate-html-plugin` 插件的配置
+ * @param value `interpolate-html-plugin` 配置
+ * @see {@link https://github.com/egoist/interpolate-html-plugin#readme}
+ * @returns a function that takes in the original config as the first argument (and optionally a context object) and returns the new config
+ * @version 1.0.2
+ */
 const addInterpolateHtmlPlugin = value => config => {
   const plugin = getWebpackPlugin(config.plugins, 'InterpolateHtmlPlugin');
   if (!plugin) throw new Error("InterpolateHtmlPlugin don't exist!");
-  // const { replacements = {}, ...rest } = value
-  Object.assign(plugin?.replacements, value);
-  // Object.assign(plugin, rest)
+  merge(plugin.replacements, value);
   return config;
 };
 /** modify output config */
@@ -253,7 +283,6 @@ class HtmlWebpackMixinRobot {
   }
 }
 
-// import type { Configuration } from "webpack"
 /**
  * read env config file.the rule like create-react-env
  */
@@ -346,7 +375,9 @@ const stringifyVal = target => {
 };
 /**
  * override configure by combine a list of function that used for modifing
- * */
+ * @param plugins {Function[]} 配置项
+ * @returns 合并的配置项
+ */
 const override = (...plugins) => plugins.filter(f => f).reduce((pre, cur) => {
   return (webpackConfig, extra = {}) => {
     return cur(pre(webpackConfig, extra), extra);
@@ -405,7 +436,7 @@ export { HtmlWebpackInjectHead, HtmlWebpackMixinRobot, addDefinitionsEnvValue, a
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sat Jun 17 2023 00:20:15 GMT+0800 (China Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sat Jul 01 2023 17:08:53 GMT+0800 (中国标准时间) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

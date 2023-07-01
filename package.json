@@ -1,6 +1,6 @@
 {
   "name": "@biulight/craco-config-extensions",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "简化craco配置，支持动态加载打包产物",
   "keywords": [
     "craco",
@@ -53,6 +53,7 @@
     "@rollup/plugin-replace": "^5.0.2",
     "@rollup/plugin-typescript": "^11.0.0",
     "@types/jest": "^29.2.5",
+    "@types/lodash": "^4.14.195",
     "@types/webpack": "^5.28.0",
     "@typescript-eslint/eslint-plugin": "^5.59.7",
     "@typescript-eslint/parser": "^5.59.7",
@@ -81,7 +82,8 @@
     "@craco/craco": "^7.1.0",
     "@types/node": "^20.2.3",
     "dotenv": "^16.0.3",
-    "html-webpack-plugin": "^5.5.0"
+    "html-webpack-plugin": "^5.5.0",
+    "lodash": "^4.17.21"
   },
   "packageManager": "yarn@3.5.1"
 }

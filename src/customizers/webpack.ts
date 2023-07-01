@@ -1,4 +1,5 @@
 import type { Configuration } from 'webpack'
+import { merge } from 'lodash'
 // import fs from 'node:fs'
 import { getWebpackPlugin, getType } from '../utils'
 
@@ -44,14 +45,19 @@ export const addDefinitionsEnvValue =
     return config
   }
 
+/**
+ * 修改`html-webpack-plugin` 插件配置
+ * @param value 配置
+ * @param {number} [id] - HtmlWebpackPlugin插件数组中的位置
+ * @returns a function that takes in the original config as the first argument (and optionally a context object) and returns the new config
+ * @since 1.0.2
+ * @version 1.0.2
+ */
 export const addHtmlWebpackPlugin =
-  (value: any, id: number) => (config: Configuration) => {
+  (value: any, id?: number) => (config: Configuration) => {
     const plugin = getWebpackPlugin(config.plugins, 'HtmlWebpackPlugin', id)
     if (!plugin) throw new Error("HtmlWebpackPlugin don't exist!")
-    Object.assign(plugin, value)
-
-    console.log(plugin, 'htmlwebpackplugin')
-    // const
+    merge(plugin, value)
     return config
   }
 
@@ -59,14 +65,14 @@ export const addHtmlWebpackPlugin =
  * 支持修改 `interpolate-html-plugin` 插件的配置
  * @param value `interpolate-html-plugin` 配置
  * @see {@link https://github.com/egoist/interpolate-html-plugin#readme}
+ * @returns a function that takes in the original config as the first argument (and optionally a context object) and returns the new config
+ * @version 1.0.2
  */
 export const addInterpolateHtmlPlugin =
   (value: any) => (config: Configuration) => {
     const plugin = getWebpackPlugin(config.plugins, 'InterpolateHtmlPlugin')
     if (!plugin) throw new Error("InterpolateHtmlPlugin don't exist!")
-    // const { replacements = {}, ...rest } = value
-    Object.assign(plugin?.replacements, value)
-    // Object.assign(plugin, rest)
+    merge(plugin.replacements, value)
 
     return config
   }

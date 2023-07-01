@@ -35,6 +35,10 @@ yarn add --dev @biulight/craco-config-extensions
 
 修改`DefinePlugin`插件
 
+##### `addHtmlWebpackPlugin`
+
+修改 `html-webpack-plugin` 插件
+
 ##### `addInterpolateHtmlPlugin`
 
 修改`create-react-app`内置的`InterpolateHtmlPlugin`插件
@@ -48,7 +52,11 @@ yarn add --dev @biulight/craco-config-extensions
 
 ##### `HtmlWebpackInjectHead`
 
+详见[动态加载指定域名静态资源](#方案一(旧方案))方案一
+
 ##### `HtmlWebpackMixinRobot`
+
+详见[动态加载指定域名静态资源](#方案二（推荐)方案二
 
 #### cracoPlugin
 
@@ -75,7 +83,7 @@ module.exports = {
 
 ##### `override`
 
-高阶函数，支持配置函数链式调用
+高阶函数，支持配置函数链式调用，详见示例
 
 ##### `stringifyVal`
 

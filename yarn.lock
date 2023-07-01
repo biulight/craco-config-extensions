@@ -1353,6 +1353,7 @@ __metadata:
     "@rollup/plugin-replace": ^5.0.2
     "@rollup/plugin-typescript": ^11.0.0
     "@types/jest": ^29.2.5
+    "@types/lodash": ^4.14.195
     "@types/node": ^20.2.3
     "@types/webpack": ^5.28.0
     "@typescript-eslint/eslint-plugin": ^5.59.7
@@ -1372,6 +1373,7 @@ __metadata:
     jest: ^29.3.1
     jsdoc: ^4.0.2
     lint-staged: ^13.1.0
+    lodash: ^4.17.21
     prettier: ^2.8.3
     rimraf: ^4.0.7
     rollup: ^3.10.0
@@ -2381,6 +2383,13 @@ __metadata:
   version: 3.0.2
   resolution: "@types/linkify-it@npm:3.0.2"
   checksum: dff8f10fafb885422474e456596f12d518ec4cdd6c33cca7a08e7c86b912d301ed91cf5a7613e148c45a12600dc9ab3d85ad16d5b48dc1aaeda151a68f16b536
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:^4.14.195":
+  version: 4.14.195
+  resolution: "@types/lodash@npm:4.14.195"
+  checksum: 39b75ca635b3fa943d17d3d3aabc750babe4c8212485a4df166fe0516e39288e14b0c60afc6e21913cc0e5a84734633c71e617e2bd14eaa1cf51b8d7799c432e
   languageName: node
   linkType: hard
 

@@ -29,7 +29,7 @@
 <nav >
     
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="LoadRobot.html">LoadRobot</a><ul class='methods'><li data-type='method'><a href="LoadRobot.html#getEnvConfig">getEnvConfig</a></li><li data-type='method'><a href="LoadRobot.html#.createInstance">createInstance</a></li><li data-type='method'><a href="LoadRobot.html#.createLink">createLink</a></li><li data-type='method'><a href="LoadRobot.html#.createScript">createScript</a></li><li data-type='method'><a href="LoadRobot.html#.getInstance">getInstance</a></li><li data-type='method'><a href="LoadRobot.html#.load">load</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-sass-resources-loader.html">sass-resources-loader</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addDefinitionsEnvValue">addDefinitionsEnvValue</a></li><li><a href="global.html#addInterpolateHtmlPlugin">addInterpolateHtmlPlugin</a></li><li><a href="global.html#addSplitChunksPlugin">addSplitChunksPlugin</a></li><li><a href="global.html#modifyOutputConfig">modifyOutputConfig</a></li><li><a href="global.html#override">override</a></li><li><a href="global.html#readAllDotenvFiles">readAllDotenvFiles</a></li><li><a href="global.html#readDotenvFiles">readDotenvFiles</a></li><li><a href="global.html#writeConfigForDebug">writeConfigForDebug</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="LoadRobot.html">LoadRobot</a><ul class='methods'><li data-type='method'><a href="LoadRobot.html#getEnvConfig">getEnvConfig</a></li><li data-type='method'><a href="LoadRobot.html#.createInstance">createInstance</a></li><li data-type='method'><a href="LoadRobot.html#.createLink">createLink</a></li><li data-type='method'><a href="LoadRobot.html#.createScript">createScript</a></li><li data-type='method'><a href="LoadRobot.html#.getInstance">getInstance</a></li><li data-type='method'><a href="LoadRobot.html#.load">load</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-sass-resources-loader.html">sass-resources-loader</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addDefinitionsEnvValue">addDefinitionsEnvValue</a></li><li><a href="global.html#addHtmlWebpackPlugin">addHtmlWebpackPlugin</a></li><li><a href="global.html#addInterpolateHtmlPlugin">addInterpolateHtmlPlugin</a></li><li><a href="global.html#addSplitChunksPlugin">addSplitChunksPlugin</a></li><li><a href="global.html#modifyOutputConfig">modifyOutputConfig</a></li><li><a href="global.html#override">override</a></li><li><a href="global.html#readAllDotenvFiles">readAllDotenvFiles</a></li><li><a href="global.html#readDotenvFiles">readDotenvFiles</a></li><li><a href="global.html#writeConfigForDebug">writeConfigForDebug</a></li></ul>
     
 </nav>
 
@@ -45,7 +45,8 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import path from 'node:path';
+            <pre class="prettyprint source linenums"><code>import { merge } from 'lodash';
+import path from 'node:path';
 import fs from 'node:fs';
 import { getLoader, loaderByName, addAfterLoader } from '@craco/craco';
 
@@ -118,7 +119,6 @@ const insertStringBefore = (haystack, needle, insertedString) => {
   return haystack.slice(0, index) + insertedString + haystack.slice(index);
 };
 
-// import fs from 'node:fs'
 /**
  * For debugging,write config to webpack.config.json file
  */
@@ -150,25 +150,31 @@ const addDefinitionsEnvValue = value => config => {
   };
   return config;
 };
+/**
+ * 修改`html-webpack-plugin` 插件配置
+ * @param value 配置
+ * @param {number} [id] - HtmlWebpackPlugin插件数组中的位置
+ * @returns a function that takes in the original config as the first argument (and optionally a context object) and returns the new config
+ * @since 1.0.2
+ * @version 1.0.2
+ */
 const addHtmlWebpackPlugin = (value, id) => config => {
   const plugin = getWebpackPlugin(config.plugins, 'HtmlWebpackPlugin', id);
   if (!plugin) throw new Error("HtmlWebpackPlugin don't exist!");
-  Object.assign(plugin, value);
-  console.log(plugin, 'htmlwebpackplugin');
-  // const
+  merge(plugin, value);
   return config;
 };
 /**
  * 支持修改 `interpolate-html-plugin` 插件的配置
  * @param value `interpolate-html-plugin` 配置
  * @see {@link https://github.com/egoist/interpolate-html-plugin#readme}
+ * @returns a function that takes in the original config as the first argument (and optionally a context object) and returns the new config
+ * @version 1.0.2
  */
 const addInterpolateHtmlPlugin = value => config => {
   const plugin = getWebpackPlugin(config.plugins, 'InterpolateHtmlPlugin');
   if (!plugin) throw new Error("InterpolateHtmlPlugin don't exist!");
-  // const { replacements = {}, ...rest } = value
-  Object.assign(plugin?.replacements, value);
-  // Object.assign(plugin, rest)
+  merge(plugin.replacements, value);
   return config;
 };
 /** modify output config */
@@ -430,7 +436,7 @@ export { HtmlWebpackInjectHead, HtmlWebpackMixinRobot, addDefinitionsEnvValue, a
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sun Jun 18 2023 21:18:52 GMT+0800 (中国标准时间) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sat Jul 01 2023 17:08:53 GMT+0800 (中国标准时间) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

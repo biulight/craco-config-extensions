@@ -115,7 +115,7 @@ export const stringifyVal = (target: Record<string, any>) => {
 /**
  * override configure by combine a list of function that used for modifing
  * @param plugins {Function[]} 配置项
- * @returns 合并的配置项
+ * @returns the new config
  */
 export const override = (...plugins: (Function | false)[]) =>
   (plugins.filter((f) => f) as Function[]).reduce((pre, cur) => {

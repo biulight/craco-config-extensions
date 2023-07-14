@@ -4,6 +4,11 @@ module.exports = {
   extends: ['semistandard', 'standard'],
   ignorePatterns: ['**/*.d.ts'],
   env: {},
+  rules: {
+    'space-before-function-paren': ['error', {
+      named: 'never'
+    }]
+  },
   globals: {
     __DEV__: false // 禁用
   }

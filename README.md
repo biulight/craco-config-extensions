@@ -2,6 +2,8 @@
 
 > 用于快速配置 craco.config.js 文件，支持基于文档地址动态指定文档中URL资源地址
 
+[Handbook](https://biulight.github.io/craco-config-extensions/index.html)
+
 ## Requirements
 
 基于`webpack5`和`@craco/craco@7.0.0`
@@ -95,9 +97,7 @@ module.exports = {
 
 #### `LoadRobot`
 
-```js
-
-```
+使用方式详见[LoadRobot](https://biulight.github.io/craco-config-extensions/LoadRobot.html)
 
 
 ### 示例
@@ -188,6 +188,15 @@ const envInstance = CracoEnv.createInstance({
 
 // 使用
 const server = envInstance.DOMAIN_SERVER
+```
+
+> 结合 `HtmlWebpackInjectHead` 或 `HtmlWebpackMixinRobot` 使用时
+```js
+import CracoEnv from "@biulight/craco-config-extensions/dist/loadRobot"
+
+const envInstance = CracoEnv.getInstance();
+
+const server = envInstance.DOMAIN_SERVER;
 ```
 
 #### 动态加载指定域名静态资源

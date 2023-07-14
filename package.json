@@ -1,6 +1,6 @@
 {
   "name": "@biulight/craco-config-extensions",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "简化craco配置，支持动态加载打包产物",
   "keywords": [
     "craco",
@@ -10,7 +10,7 @@
   "main": "dist/index.cjs",
   "module": "dist/index.esm.js",
   "type": "module",
-  "homepage": "https://github.com/biulight/craco-config-extensions",
+  "homepage": "https://biulight.github.io/craco-config-extensions/index.html",
   "bugs": "https://github.com/biulight/craco-config-extensions/issues",
   "repository": "git@biulight.github.com:biulight/craco-config-extensions.git",
   "author": "biulight <biulight007@gmail.com>",

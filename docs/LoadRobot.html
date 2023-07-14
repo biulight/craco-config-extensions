@@ -29,7 +29,7 @@
 <nav >
     
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="LoadRobot.html">LoadRobot</a><ul class='methods'><li data-type='method'><a href="LoadRobot.html#getEnvConfig">getEnvConfig</a></li><li data-type='method'><a href="LoadRobot.html#.createInstance">createInstance</a></li><li data-type='method'><a href="LoadRobot.html#.createLink">createLink</a></li><li data-type='method'><a href="LoadRobot.html#.createScript">createScript</a></li><li data-type='method'><a href="LoadRobot.html#.getInstance">getInstance</a></li><li data-type='method'><a href="LoadRobot.html#.load">load</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-sass-resources-loader.html">sass-resources-loader</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addDefinitionsEnvValue">addDefinitionsEnvValue</a></li><li><a href="global.html#addHtmlWebpackPlugin">addHtmlWebpackPlugin</a></li><li><a href="global.html#addInterpolateHtmlPlugin">addInterpolateHtmlPlugin</a></li><li><a href="global.html#addSplitChunksPlugin">addSplitChunksPlugin</a></li><li><a href="global.html#modifyOutputConfig">modifyOutputConfig</a></li><li><a href="global.html#override">override</a></li><li><a href="global.html#readAllDotenvFiles">readAllDotenvFiles</a></li><li><a href="global.html#readDotenvFiles">readDotenvFiles</a></li><li><a href="global.html#writeConfigForDebug">writeConfigForDebug</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="LoadRobot.html">LoadRobot</a><ul class='methods'><li data-type='method'><a href="LoadRobot.html#getEnvConfig">getEnvConfig</a></li><li data-type='method'><a href="LoadRobot.html#load">load</a></li><li data-type='method'><a href="LoadRobot.html#.createInstance">createInstance</a></li><li data-type='method'><a href="LoadRobot.html#.createLink">createLink</a></li><li data-type='method'><a href="LoadRobot.html#.createScript">createScript</a></li><li data-type='method'><a href="LoadRobot.html#.getInstance">getInstance</a></li><li data-type='method'><a href="LoadRobot.html#.load">load</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-sass-resources-loader.html">sass-resources-loader</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addDefinitionsEnvValue">addDefinitionsEnvValue</a></li><li><a href="global.html#addHtmlWebpackPlugin">addHtmlWebpackPlugin</a></li><li><a href="global.html#addInterpolateHtmlPlugin">addInterpolateHtmlPlugin</a></li><li><a href="global.html#addSplitChunksPlugin">addSplitChunksPlugin</a></li><li><a href="global.html#modifyOutputConfig">modifyOutputConfig</a></li><li><a href="global.html#override">override</a></li><li><a href="global.html#readAllDotenvFiles">readAllDotenvFiles</a></li><li><a href="global.html#readDotenvFiles">readDotenvFiles</a></li><li><a href="global.html#writeConfigForDebug">writeConfigForDebug</a></li></ul>
     
 </nav>
 
@@ -99,7 +99,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="loadRobot_index.esm.js.html">loadRobot/index.esm.js</a>, <a href="loadRobot_index.esm.js.html#line144">line 144</a>
+        <a href="loadRobot_index.esm.js.html">loadRobot/index.esm.js</a>, <a href="loadRobot_index.esm.js.html#line145">line 145</a>
     </li></ul></dd>
     
 
@@ -187,6 +187,207 @@
 
     
 
+    <h4 class="name" id="load"><span class="type-signature"></span>load<span class="signature">(list, env<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="global.html#ResourceLoadSuccessCallback">ResourceLoadSuccessCallback</a>>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>在指定（所有）环境加载静态资源</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="loadRobot_index.esm.js.html">loadRobot/index.esm.js</a>, <a href="loadRobot_index.esm.js.html#line201">line 201</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.0.4</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>list</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;string></span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>静态资源的URL地址集合</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>env</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>环境变量</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;<a href="global.html#ResourceLoadSuccessCallback">ResourceLoadSuccessCallback</a>></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
     <h4 class="name" id=".createInstance"><span class="type-signature type-signature-static">(static) </span>createInstance<span class="signature">(envMap, optional)</span><span class="type-signature"></span></h4>
 
     
@@ -203,7 +404,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="loadRobot_index.esm.js.html">loadRobot/index.esm.js</a>, <a href="loadRobot_index.esm.js.html#line79">line 79</a>
+        <a href="loadRobot_index.esm.js.html">loadRobot/index.esm.js</a>, <a href="loadRobot_index.esm.js.html#line80">line 80</a>
     </li></ul></dd>
     
 
@@ -472,7 +673,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="loadRobot_index.esm.js.html">loadRobot/index.esm.js</a>, <a href="loadRobot_index.esm.js.html#line243">line 243</a>
+        <a href="loadRobot_index.esm.js.html">loadRobot/index.esm.js</a>, <a href="loadRobot_index.esm.js.html#line265">line 265</a>
     </li></ul></dd>
     
 
@@ -686,7 +887,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="loadRobot_index.esm.js.html">loadRobot/index.esm.js</a>, <a href="loadRobot_index.esm.js.html#line209">line 209</a>
+        <a href="loadRobot_index.esm.js.html">loadRobot/index.esm.js</a>, <a href="loadRobot_index.esm.js.html#line231">line 231</a>
     </li></ul></dd>
     
 
@@ -844,7 +1045,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="global.html#resourceLoadSuccessCallback">resourceLoadSuccessCallback</a></span>
+<span class="param-type"><a href="global.html#ResourceLoadSuccessCallback">ResourceLoadSuccessCallback</a></span>
 
 
 
@@ -938,12 +1139,15 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="loadRobot_index.esm.js.html">loadRobot/index.esm.js</a>, <a href="loadRobot_index.esm.js.html#line66">line 66</a>
+        <a href="loadRobot_index.esm.js.html">loadRobot/index.esm.js</a>, <a href="loadRobot_index.esm.js.html#line67">line 67</a>
     </li></ul></dd>
     
 
     
 
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.0.0-rc.1</li></ul></dd>
     
 
     
@@ -1030,7 +1234,7 @@
 
     
 
-    <h4 class="name" id=".load"><span class="type-signature type-signature-static">(static) </span>load<span class="signature">(list, callback<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".load"><span class="type-signature type-signature-static">(static) </span>load<span class="signature">(list, callback<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="global.html#ResourceLoadSuccessCallback">ResourceLoadSuccessCallback</a>>}</span></h4>
 
     
 
@@ -1046,12 +1250,15 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="loadRobot_index.esm.js.html">loadRobot/index.esm.js</a>, <a href="loadRobot_index.esm.js.html#line166">line 166</a>
+        <a href="loadRobot_index.esm.js.html">loadRobot/index.esm.js</a>, <a href="loadRobot_index.esm.js.html#line169">line 169</a>
     </li></ul></dd>
     
 
     
 
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>0.2.5</li></ul></dd>
     
 
     
@@ -1158,7 +1365,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="global.html#resourceLoadSuccessCallback">resourceLoadSuccessCallback</a></span>
+<span class="param-type"><a href="global.html#ResourceLoadSuccessCallback">ResourceLoadSuccessCallback</a></span>
 
 
 
@@ -1179,7 +1386,7 @@
 
             
 
-            <td class="description last"><p>静态资源加载完成的回调函数</p></td>
+            <td class="description last"><p>静态资源加载完成的回调函数(自0.2.6版本起)</p></td>
         </tr>
 
     
@@ -1201,6 +1408,29 @@
 
 
 
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>(自1.0.4版本起)</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;<a href="global.html#ResourceLoadSuccessCallback">ResourceLoadSuccessCallback</a>></span>
+
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -1224,7 +1454,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sat Jul 01 2023 17:14:39 GMT+0800 (中国标准时间) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Fri Jul 14 2023 23:21:13 GMT+0800 (中国标准时间) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

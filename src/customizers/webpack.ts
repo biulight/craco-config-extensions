@@ -50,7 +50,7 @@ export const addDefinitionsEnvValue =
  * @param value 配置
  * @param {number} [id] - HtmlWebpackPlugin插件数组中的位置
  * @returns a function that takes in the original config as the first argument (and optionally a context object) and returns the new config
- * @since 1.0.2
+ * @since 0.2.5
  * @version 1.0.2
  */
 export const addHtmlWebpackPlugin =
@@ -66,6 +66,7 @@ export const addHtmlWebpackPlugin =
  * @param value `interpolate-html-plugin` 配置
  * @see {@link https://github.com/egoist/interpolate-html-plugin#readme}
  * @returns a function that takes in the original config as the first argument (and optionally a context object) and returns the new config
+ * @since 0.2.5
  * @version 1.0.2
  */
 export const addInterpolateHtmlPlugin =

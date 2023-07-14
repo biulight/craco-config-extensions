@@ -6,10 +6,10 @@ interface HtmlAttributes {
 
 /**
  * 静态资源加载成功的回调函数
- * @callback resourceLoadSuccessCallback
+ * @callback ResourceLoadSuccessCallback
  */
 
-function createTag (
+function createTag(
   tagName: string,
   attributes: HtmlAttributes,
   position?: string
@@ -44,10 +44,10 @@ const ROBOT = Symbol.for('BIU_LIGHT_ROBOT_INSTANCE')
 /** HTML静态资源环境信息管理器 */
 class LoadRobot {
   #envConfig: Record<string, string> = {}
-  #outlet = ['getEnvConfig']
+  #outlet = ['getEnvConfig', 'load']
 
   #proxyHandler = {
-    get (target: LoadRobot, propKey: string, receiver: LoadRobot) {
+    get(target: LoadRobot, propKey: string, receiver: LoadRobot) {
       // if (target.#outlet.includes(propKey)) return Reflect.get(target, propKey, receiver)
       if (target.#outlet.includes(propKey)) {
         return Reflect.get(target, propKey).bind(target)
@@ -67,7 +67,7 @@ class LoadRobot {
    * @param {boolean} [optional.force = false] 环境信息根据pathname匹配；（true: 开启；false: 忽略pathname）
    * @hideconstructor
    */
-  constructor (envMap: Record<string, any>, optional: Optional) {
+  constructor(envMap: Record<string, any>, optional: Optional) {
     if (!LoadRobot.#permit) {
       throw new Error(
         "LoadRobot only supports instantiation through the static method 'createInstance' "
@@ -90,8 +90,9 @@ class LoadRobot {
   /**
    * 获取唯一的域名映射器实例
    * @returns {LoadRobot} The LoadRobot instance.
+   * @since 1.0.0-rc.1
    */
-  static getInstance (): LoadRobot {
+  static getInstance(): LoadRobot {
     // @ts-ignore
     if (!window[ROBOT]) throw new Error('LoadRobot need initialization')
     // @ts-ignore
@@ -105,7 +106,7 @@ class LoadRobot {
    * @param {string} [optional.key = "BIU_LIGHT_ROBOT_INSTANCE"] 挂载在window对象上的loadrobot实例的标识
    * @param {boolean} [optional.force = false] 环境信息根据pathname匹配；（true: 开启；false: 忽略pathname）
    */
-  static createInstance (
+  static createInstance(
     envMap: Record<string, any>,
     optional?: Optional
     // key = "BIU_LIGHT_ROBOT_INSTANCE"
@@ -124,7 +125,7 @@ class LoadRobot {
    * @param force
    * @private
    */
-  #init (envMap: Record<string, any>, { force }: Optional) {
+  #init(envMap: Record<string, any>, { force }: Optional) {
     const { hostname, pathname } = new URL(window.location.href)
     // todo 最长子序列
     this.#envConfig = force
@@ -144,7 +145,7 @@ class LoadRobot {
    * @param pathname
    * @private
    */
-  #getAccordEnvConfig (
+  #getAccordEnvConfig(
     envMap: Record<string, any>,
     { hostname, pathname }: { hostname: string; pathname: string }
   ) {
@@ -167,7 +168,7 @@ class LoadRobot {
    * 获取当前环境信息配置
    * @returns {Object.<string, string>}
    */
-  public getEnvConfig () {
+  public getEnvConfig() {
     return this.#envConfig
   }
 
@@ -176,7 +177,7 @@ class LoadRobot {
    * @param {string} href base标签的href属性值
    * @param {function=} success 成功插入base标签的回调
    */
-  #createBase (href: string, success?: () => void) {
+  #createBase(href: string, success?: () => void) {
     const baseEle = document.createElement('base')
     baseEle.href = href
 
@@ -190,30 +191,52 @@ class LoadRobot {
   /**
    * load resource by creating tag element
    * @param {string[]} list 静态资源的URL地址集合
-   * @param {resourceLoadSuccessCallback=} callback 静态资源加载完成的回调函数
+   * @param {ResourceLoadSuccessCallback=} callback 静态资源加载完成的回调函数(自0.2.6版本起)
+   * @returns {Promise<ResourceLoadSuccessCallback>} 静态资源加载Promise(自1.0.4版本起)
+   * @since 0.2.5
    */
-  static load (list: string[], callback?: () => void) {
-    const fragment = document.createDocumentFragment()
-    let readyLoadNum = list.length
-    const updateFunc = () => {
-      readyLoadNum--
-      if (readyLoadNum === 0 && callback) callback()
-    }
-    for (const url of list) {
-      if (url.endsWith('.js')) {
-        fragment.appendChild(LoadRobot.createScript(url, false, updateFunc))
-      }
-      if (url.endsWith('.css')) {
+  static load(list: string[], callback?: () => void) {
+    return new Promise((resolve) => {
+      const fragment = document.createDocumentFragment()
+      let readyLoadNum = list.length
+      const updateFunc = () => {
         readyLoadNum--
-        fragment.appendChild(LoadRobot.createLink(url, false))
+        // if (readyLoadNum === 0 && callback) callback()
+        if (readyLoadNum === 0) {
+          if (callback) callback()
+          resolve('ok')
+        }
       }
-    }
+      for (const url of list) {
+        if (url.endsWith('.js')) {
+          fragment.appendChild(LoadRobot.createScript(url, false, updateFunc))
+        }
+        if (url.endsWith('.css')) {
+          readyLoadNum--
+          fragment.appendChild(LoadRobot.createLink(url, false))
+        }
+      }
 
-    const currentScript = document.currentScript
-    currentScript?.parentElement?.insertBefore(
-      fragment,
-      currentScript.nextElementSibling
-    )
+      const currentScript = document.currentScript
+      currentScript?.parentElement?.insertBefore(
+        fragment,
+        currentScript.nextElementSibling
+      )
+    })
+  }
+
+  /**
+   * 在指定（所有）环境加载静态资源
+   * @param {string[]} list 静态资源的URL地址集合
+   * @param {string=} env 环境变量
+   * @returns {Promise<ResourceLoadSuccessCallback>}
+   * @since 1.0.4
+   */
+  public load(list: string[], env?: string) {
+    return new Promise((resolve) => {
+      if (env && env !== this.#envConfig.ENV) return
+      LoadRobot.load(list).then(resolve)
+    })
   }
 
   /**
@@ -222,7 +245,7 @@ class LoadRobot {
    * @param {string} position HTML标签名，注入tags的位置
    * @ignore
    */
-  static loadOrigin (tags: HtmlTagObject[], position: string) {
+  static loadOrigin(tags: HtmlTagObject[], position: string) {
     const fragment = document.createDocumentFragment()
     for (const tag of tags) {
       const { tagName, attributes } = tag
@@ -235,10 +258,10 @@ class LoadRobot {
    * 动态创建script标签
    * @param {string} url script标签的src属性
    * @param {boolean} [auto = true] 在head标签顶部插入此script标签，true: 插入，false: 不插入
-   * @param {resourceLoadSuccessCallback=} callback 静态资源加载完成的回调函数
+   * @param {ResourceLoadSuccessCallback=} callback 静态资源加载完成的回调函数
    * @returns {HTMLScriptElement} script标签
    */
-  static createScript (url: string, auto: boolean = true, callback?: Function) {
+  static createScript(url: string, auto: boolean = true, callback?: Function) {
     const script = document.createElement('script')
     const fn = callback || function () {}
     script.setAttribute('type', 'text/javascript')
@@ -275,7 +298,7 @@ class LoadRobot {
    * @param {boolean} [auto = true] 在head标签顶部插入此link标签，true: 插入，false: 不插入
    * @returns {HTMLLinkElement} link标签
    */
-  static createLink (url: string, auto: boolean = true) {
+  static createLink(url: string, auto: boolean = true) {
     const link = document.createElement('link')
     link.setAttribute('rel', 'stylesheet')
     link.setAttribute('type', 'text/css')

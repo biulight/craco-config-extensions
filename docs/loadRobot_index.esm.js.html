@@ -29,7 +29,7 @@
 <nav >
     
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="LoadRobot.html">LoadRobot</a><ul class='methods'><li data-type='method'><a href="LoadRobot.html#getEnvConfig">getEnvConfig</a></li><li data-type='method'><a href="LoadRobot.html#.createInstance">createInstance</a></li><li data-type='method'><a href="LoadRobot.html#.createLink">createLink</a></li><li data-type='method'><a href="LoadRobot.html#.createScript">createScript</a></li><li data-type='method'><a href="LoadRobot.html#.getInstance">getInstance</a></li><li data-type='method'><a href="LoadRobot.html#.load">load</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-sass-resources-loader.html">sass-resources-loader</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addDefinitionsEnvValue">addDefinitionsEnvValue</a></li><li><a href="global.html#addHtmlWebpackPlugin">addHtmlWebpackPlugin</a></li><li><a href="global.html#addInterpolateHtmlPlugin">addInterpolateHtmlPlugin</a></li><li><a href="global.html#addSplitChunksPlugin">addSplitChunksPlugin</a></li><li><a href="global.html#modifyOutputConfig">modifyOutputConfig</a></li><li><a href="global.html#override">override</a></li><li><a href="global.html#readAllDotenvFiles">readAllDotenvFiles</a></li><li><a href="global.html#readDotenvFiles">readDotenvFiles</a></li><li><a href="global.html#writeConfigForDebug">writeConfigForDebug</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="LoadRobot.html">LoadRobot</a><ul class='methods'><li data-type='method'><a href="LoadRobot.html#getEnvConfig">getEnvConfig</a></li><li data-type='method'><a href="LoadRobot.html#load">load</a></li><li data-type='method'><a href="LoadRobot.html#.createInstance">createInstance</a></li><li data-type='method'><a href="LoadRobot.html#.createLink">createLink</a></li><li data-type='method'><a href="LoadRobot.html#.createScript">createScript</a></li><li data-type='method'><a href="LoadRobot.html#.getInstance">getInstance</a></li><li data-type='method'><a href="LoadRobot.html#.load">load</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-sass-resources-loader.html">sass-resources-loader</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addDefinitionsEnvValue">addDefinitionsEnvValue</a></li><li><a href="global.html#addHtmlWebpackPlugin">addHtmlWebpackPlugin</a></li><li><a href="global.html#addInterpolateHtmlPlugin">addInterpolateHtmlPlugin</a></li><li><a href="global.html#addSplitChunksPlugin">addSplitChunksPlugin</a></li><li><a href="global.html#modifyOutputConfig">modifyOutputConfig</a></li><li><a href="global.html#override">override</a></li><li><a href="global.html#readAllDotenvFiles">readAllDotenvFiles</a></li><li><a href="global.html#readDotenvFiles">readDotenvFiles</a></li><li><a href="global.html#writeConfigForDebug">writeConfigForDebug</a></li></ul>
     
 </nav>
 
@@ -47,7 +47,7 @@
         <article>
             <pre class="prettyprint source linenums"><code>/**
  * 静态资源加载成功的回调函数
- * @callback resourceLoadSuccessCallback
+ * @callback ResourceLoadSuccessCallback
  */
 function createTag(tagName, attributes, position) {
   const tag = document.createElement(tagName);
@@ -109,6 +109,7 @@ class LoadRobot {
   /**
    * 获取唯一的域名映射器实例
    * @returns {LoadRobot} The LoadRobot instance.
+   * @since 1.0.0-rc.1
    */
   static getInstance() {
     // @ts-ignore
@@ -208,26 +209,47 @@ class LoadRobot {
   /**
    * load resource by creating tag element
    * @param {string[]} list 静态资源的URL地址集合
-   * @param {resourceLoadSuccessCallback=} callback 静态资源加载完成的回调函数
+   * @param {ResourceLoadSuccessCallback=} callback 静态资源加载完成的回调函数(自0.2.6版本起)
+   * @returns {Promise&lt;ResourceLoadSuccessCallback>} (自1.0.4版本起)
+   * @since 0.2.5
    */
   static load(list, callback) {
-    const fragment = document.createDocumentFragment();
-    let readyLoadNum = list.length;
-    const updateFunc = () => {
-      readyLoadNum--;
-      if (readyLoadNum === 0 &amp;&amp; callback) callback();
-    };
-    for (const url of list) {
-      if (url.endsWith('.js')) {
-        fragment.appendChild(LoadRobot.createScript(url, false, updateFunc));
-      }
-      if (url.endsWith('.css')) {
+    return new Promise(resolve => {
+      const fragment = document.createDocumentFragment();
+      let readyLoadNum = list.length;
+      const updateFunc = () => {
         readyLoadNum--;
-        fragment.appendChild(LoadRobot.createLink(url, false));
+        // if (readyLoadNum === 0 &amp;&amp; callback) callback()
+        if (readyLoadNum === 0) {
+          if (callback) callback();
+          resolve('ok');
+        }
+      };
+      for (const url of list) {
+        if (url.endsWith('.js')) {
+          fragment.appendChild(LoadRobot.createScript(url, false, updateFunc));
+        }
+        if (url.endsWith('.css')) {
+          readyLoadNum--;
+          fragment.appendChild(LoadRobot.createLink(url, false));
+        }
       }
-    }
-    const currentScript = document.currentScript;
-    currentScript?.parentElement?.insertBefore(fragment, currentScript.nextElementSibling);
+      const currentScript = document.currentScript;
+      currentScript?.parentElement?.insertBefore(fragment, currentScript.nextElementSibling);
+    });
+  }
+  /**
+   * 在指定（所有）环境加载静态资源
+   * @param {string[]} list 静态资源的URL地址集合
+   * @param {string=} env 环境变量
+   * @returns {Promise&lt;ResourceLoadSuccessCallback>}
+   * @since 1.0.4
+   */
+  load(list, env) {
+    return new Promise(resolve => {
+      if (env &amp;&amp; env !== this.#envConfig.ENV) return;
+      LoadRobot.load(list).then(resolve);
+    });
   }
   /**
    * 在指定位置插入html资源，用于htmlWebpackPlugin自定义插件
@@ -250,7 +272,7 @@ class LoadRobot {
    * 动态创建script标签
    * @param {string} url script标签的src属性
    * @param {boolean} [auto = true] 在head标签顶部插入此script标签，true: 插入，false: 不插入
-   * @param {resourceLoadSuccessCallback=} callback 静态资源加载完成的回调函数
+   * @param {ResourceLoadSuccessCallback=} callback 静态资源加载完成的回调函数
    * @returns {HTMLScriptElement} script标签
    */
   static createScript(url, auto = true, callback) {
@@ -315,7 +337,7 @@ export { LoadRobot as default };
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sat Jul 01 2023 17:14:39 GMT+0800 (中国标准时间) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Fri Jul 14 2023 23:21:13 GMT+0800 (中国标准时间) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

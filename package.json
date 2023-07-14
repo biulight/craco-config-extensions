@@ -1,6 +1,6 @@
 {
   "name": "@biulight/craco-config-extensions",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "简化craco配置，支持动态加载打包产物",
   "keywords": [
     "craco",

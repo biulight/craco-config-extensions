@@ -54,11 +54,11 @@ yarn add --dev @biulight/craco-config-extensions
 
 ##### `HtmlWebpackInjectHead`
 
-详见[动态加载指定域名静态资源](#方案一(旧方案))方案一
+详见[动态加载指定域名静态资源](#方案一旧方案)方案一
 
 ##### `HtmlWebpackMixinRobot`
 
-详见[动态加载指定域名静态资源](#方案二（推荐)方案二
+详见[动态加载指定域名静态资源](#方案二推荐)方案二
 
 #### cracoPlugin
 
@@ -352,5 +352,5 @@ module.exports = {
 }
 
 ```
-`DYNAMIC_ENV`: 详见[读取指定`.env`文件中指定前缀配置](#读取指定`.env`文件中指定前缀配置)
+`DYNAMIC_ENV`: 详见[读取指定`.env`文件中指定前缀配置](#读取指定env文件中指定前缀配置)
 

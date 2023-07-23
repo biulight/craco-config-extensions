@@ -29,7 +29,10 @@ export default defineConfig([
     ],
     plugins: [
       replace({
-        __DEV__: process.env.NODE_ENV !== 'production' // 本地link调试
+        preventAssignment: true,
+        values: {
+          __DEV__: process.env.NODE_ENV !== 'production' // 本地link调试
+        }
       }),
       commonjs({
         // include: 'node_modules'
@@ -67,8 +70,11 @@ export default defineConfig([
         ]
       }),
       replace({
-        // "__DEV__": process.env.NODE_ENV !== 'production'
-        __DEV__: "process.env.NODE_ENV !== 'production'"
+        preventAssignment: true,
+        values: {
+          // "__DEV__": process.env.NODE_ENV !== 'production'
+          __DEV__: "process.env.NODE_ENV !== 'production'"
+        }
       }),
       // resolve({
       //   customResolveOptions: {

@@ -311,7 +311,6 @@ module.exports = {
         add: [
           new HtmlWebpackPlugin({
             ...
-            inject: false, // disable automatic injections
             scriptLoading: "blocking", // 动态创建`script`标签时，`defer` 属性不生效
           })
         ]

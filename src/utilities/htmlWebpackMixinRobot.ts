@@ -15,9 +15,11 @@ interface Options {
 export default class HtmlWebpackMixinRobot {
   options: Options
   htmlWebpackPlugin: typeof HtmlWebpackPlugin
+  PluginName: string
 
-  constructor (htmlWebpackPlugin: typeof HtmlWebpackPlugin, options: Options) {
+  constructor(htmlWebpackPlugin: typeof HtmlWebpackPlugin, options: Options) {
     this.htmlWebpackPlugin = htmlWebpackPlugin
+    this.PluginName = 'HtmlWebpackMixinRobot'
     this.options = {
       robot: '_BIU_LOAD_ROBOT',
       force: false,
@@ -25,7 +27,7 @@ export default class HtmlWebpackMixinRobot {
     }
   }
 
-  static insertRobotFunc (
+  static insertRobotFunc(
     html: string,
     tags: HtmlTagObject[],
     position: string,
@@ -45,7 +47,7 @@ export default class HtmlWebpackMixinRobot {
     return insertStringBefore(html, `</${position}>`, str)
   }
 
-  apply (compiler: Compiler) {
+  apply(compiler: Compiler) {
     compiler.hooks.compilation.tap('HtmlWebpackMixinRobot', (compilation) => {
       this.htmlWebpackPlugin
         .getHooks(compilation)
@@ -85,6 +87,9 @@ export default class HtmlWebpackMixinRobot {
             'body',
             this.options
           )
+          // 清除headTags和bodyTags
+          data.headTags = []
+          data.bodyTags = []
           return data
         })
     })

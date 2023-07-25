@@ -28,6 +28,12 @@ module.exports = {
   // },
   overrides: [
     {
+      test: 'src/loadRobot',
+      presets: [
+        ['@babel/preset-env', { useBuiltIns: 'usage', corejs: '3.22' }],
+      ]
+    },
+    {
       test: '__test__',
       plugins: [['babel-plugin-transform-import-meta', { module: 'ES6' }]]
     }

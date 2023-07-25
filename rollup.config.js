@@ -1,14 +1,16 @@
 import { fileURLToPath } from 'node:url'
+import { defineConfig } from 'rollup'
 import alias from '@rollup/plugin-alias'
 import replace from '@rollup/plugin-replace'
-import resolve from '@rollup/plugin-node-resolve'
+import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
 import babel from '@rollup/plugin-babel'
+import terser from '@rollup/plugin-terser'
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 
-export default [
+export default defineConfig([
   {
     input: 'src/loadRobot/index.ts',
     output: [
@@ -21,19 +23,27 @@ export default [
         file: 'dist/loadRobot/index.umd.js',
         format: 'umd',
         sourcemap: isDevelopment,
-        minifyInternalExports: true
+        minifyInternalExports: true,
+        plugins: [terser()]
       }
     ],
     plugins: [
       replace({
-        __DEV__: process.env.NODE_ENV !== 'production' // 本地link调试
+        preventAssignment: true,
+        values: {
+          __DEV__: process.env.NODE_ENV !== 'production' // 本地link调试
+        }
+      }),
+      commonjs({
+        // include: 'node_modules'
       }),
       typescript(),
       babel({
         extensions: ['.js', '.ts'],
         exclude: ['node_modules'],
         babelHelpers: 'bundled'
-      })
+      }),
+      nodeResolve()
     ]
   },
   {
@@ -53,29 +63,33 @@ export default [
       alias({
         entries: [
           // { find: "@", replacement: path.resolve(__dirname, './src') }
-          { find: '@', replacement: fileURLToPath(new URL('src', import.meta.url)) }
+          {
+            find: '@',
+            replacement: fileURLToPath(new URL('src', import.meta.url))
+          }
         ]
       }),
       replace({
-        // "__DEV__": process.env.NODE_ENV !== 'production'
-        __DEV__: 'process.env.NODE_ENV !== \'production\''
+        preventAssignment: true,
+        values: {
+          // "__DEV__": process.env.NODE_ENV !== 'production'
+          __DEV__: "process.env.NODE_ENV !== 'production'"
+        }
       }),
       // resolve({
       //   customResolveOptions: {
       //     moduleDirectory: "node_modules"
       //   }
       // }),
-      commonjs({
-        include: 'node_modules'
-      }),
-      resolve(),
+      commonjs(),
       typescript(),
       babel({
         extensions: ['.js', '.ts'],
         exclude: ['node_modules'],
         babelHelpers: 'bundled'
-      })
+      }),
+      nodeResolve()
     ],
     external: ['dotenv', 'html-webpack-plugin', '@craco/craco', 'lodash']
   }
-]
+])

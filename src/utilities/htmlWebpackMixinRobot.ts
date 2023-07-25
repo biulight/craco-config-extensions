@@ -1,8 +1,11 @@
+import fs from 'node:fs'
+import path from 'node:path'
 import type { Compiler } from 'webpack'
 import type HtmlWebpackPlugin from 'html-webpack-plugin'
 import type { HtmlTagObject } from 'html-webpack-plugin'
 
-import { insertStringBefore, insertStringAfter } from '@/utils'
+import { insertStringBefore, insertStringAfter, resolveApp } from '@/utils'
+import { readAllDotenvFiles } from '@/utilities'
 
 interface Options {
   robot?: string
@@ -10,6 +13,7 @@ interface Options {
   robotUrl?: string
   env?: string
   force?: boolean // 开启pathname匹配规则
+  prefix?: string
 }
 
 export default class HtmlWebpackMixinRobot {
@@ -23,6 +27,7 @@ export default class HtmlWebpackMixinRobot {
     this.options = {
       robot: '_BIU_LOAD_ROBOT',
       force: false,
+      prefix: '__DYNAMIC',
       ...options
     }
   }
@@ -67,6 +72,24 @@ export default class HtmlWebpackMixinRobot {
           //     2
           //   )
           // )
+          // 自动读取根目录下.env文件
+          if (!this.options.env) {
+            const dir = fs.readdirSync(resolveApp(''))
+            const env = new Set<string>()
+            dir.forEach((filename) => {
+              if (!filename.startsWith('.env')) return
+              const stats = fs.statSync(path.join(resolveApp(''), filename))
+              if (!stats.isFile()) return
+              filename.match(/^.env.([^.]+).?([^.]+)?/)
+              RegExp.$1 && env.add(RegExp.$1)
+            })
+            const { [this.options.prefix!]: DYNAMIC_ENV } = readAllDotenvFiles(
+              Array.from(env),
+              this.options.prefix
+            )
+            this.options.env = JSON.stringify(DYNAMIC_ENV)
+          }
+
           // 动态创建base标签
           if (this.options.env && this.options.robotUrl) {
             const str = `<script src="${this.options.robotUrl}"></script><script>${this.options.robot}.createInstance(${this.options.env}, {key: "${this.options.robotInstance}", force: ${this.options.force}})</script>`

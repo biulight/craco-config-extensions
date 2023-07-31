@@ -1,0 +1,4 @@
+{
+    "entryPoints": ["src/loadRobot/index.ts", "src/main.ts"],
+    "out": "docs",
+}

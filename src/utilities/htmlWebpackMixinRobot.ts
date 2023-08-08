@@ -7,21 +7,40 @@ import type { HtmlTagObject } from 'html-webpack-plugin'
 import { insertStringBefore, insertStringAfter, resolveApp } from '@/utils'
 import { readAllDotenvFiles } from '@/utilities'
 
-interface Options {
+interface MixinRobotOpts {
+  /** 挂载在window对象上的LoadRobot类的key */
   robot?: string
+  /** 挂载在window对象上的robot实例key */
   robotInstance?: string
+  /** LoadRobot函数的URL地址 */
   robotUrl?: string
+  /** 环境对照的JSON字符串 */
   env?: string
-  force?: boolean // 开启pathname匹配规则
+  /** 开启pathname匹配规则 */
+  force?: boolean
+  /** 指定 .env 文件动态变量的前缀 */
   prefix?: string
 }
 
+/**
+ * 自动注入 `LoadRobot` 实例的 `html-webpack-plugin` 插件
+ */
 export default class HtmlWebpackMixinRobot {
-  options: Options
+  options: MixinRobotOpts
   htmlWebpackPlugin: typeof HtmlWebpackPlugin
   PluginName: string
 
-  constructor(htmlWebpackPlugin: typeof HtmlWebpackPlugin, options: Options) {
+  /**
+   *
+   * @param htmlWebpackPlugin html-webpack-plugin构造器
+   * @param options - 配置项
+   * @param options.robot - LoadRobot类的全局变量
+   * @param options.robotInstance - LoadRobot实例
+   */
+  constructor(
+    htmlWebpackPlugin: typeof HtmlWebpackPlugin,
+    options: MixinRobotOpts
+  ) {
     this.htmlWebpackPlugin = htmlWebpackPlugin
     this.PluginName = 'HtmlWebpackMixinRobot'
     this.options = {
@@ -36,7 +55,7 @@ export default class HtmlWebpackMixinRobot {
     html: string,
     tags: HtmlTagObject[],
     position: string,
-    options: Options
+    options: MixinRobotOpts
   ) {
     if (!tags.length) return html
     const formatTags = tags.map((tag) => {

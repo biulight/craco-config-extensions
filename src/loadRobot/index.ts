@@ -126,10 +126,13 @@ class LoadRobot {
    * @private
    */
   #init(envMap: Record<string, any>, { force }: Optional) {
-    const { hostname, pathname } = new URL(window.location.href)
+    // const { hostname, pathname } = new URL(window.location.href)
+    const urlInstance = new URL(window.location.href)
+    const { hostname } = urlInstance
+
     // todo 最长子序列
     this.#envConfig = force
-      ? this.#getAccordEnvConfig(envMap, { hostname, pathname })
+      ? this.#getAccordEnvConfig(envMap, urlInstance)
       : envMap[hostname] || {}
     const staticDomain = this.#envConfig.STATIC_DOMAIN
     if (__DEV__ && staticDomain) {
@@ -147,18 +150,25 @@ class LoadRobot {
    */
   #getAccordEnvConfig(
     envMap: Record<string, any>,
-    { hostname, pathname }: { hostname: string; pathname: string }
+    { hostname, pathname }: URL
   ) {
     let optimum = ''
+    // 符合条件的pathname前缀长度
+    let byte = -1
     for (const key in envMap) {
       if (!Object.hasOwn(envMap, key)) continue
       // 自身属性
       if (!key.startsWith(hostname)) continue
       // hostname符合
-      const restStr = key.slice(hostname.length)
-      if (pathname.startsWith(restStr)) {
-        optimum = key
-        break
+      /** pathname前缀 */
+      const prefix = key.slice(hostname.length)
+      if (pathname.startsWith(prefix)) {
+        const curByte = prefix.length
+        if (curByte >= byte) {
+          // 记录最长的前缀长度
+          byte = curByte
+          optimum = key
+        }
       }
     }
     return envMap[optimum] || {}

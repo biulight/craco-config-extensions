@@ -45,6 +45,7 @@ export default class HtmlWebpackMixinRobot {
     this.PluginName = 'HtmlWebpackMixinRobot'
     this.options = {
       robot: '_BIU_LOAD_ROBOT',
+      robotInstance: 'BIU_LIGHT_ROBOT_INSTANCE',
       force: false,
       prefix: '__DYNAMIC',
       ...options

@@ -1,6 +1,6 @@
 {
   "name": "@biulight/craco-config-extensions",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "简化craco配置，支持动态加载打包产物",
   "keywords": [
     "craco",
@@ -30,7 +30,7 @@
   "scripts": {
     "dev": "rollup --config rollup.config.js -w",
     "build": "cross-env NODE_ENV=production rollup -c",
-    "build:doc": "typedoc --watch",
+    "build:doc": "typedoc",
     "test": "cross-env NODE_ENV=test && jest -o --collectCoverage",
     "test:all": "cross-env NODE_ENV=test && jest --collectCoverage",
     "eslint": "eslint --fix --ext .ts src/ __test__/",

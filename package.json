@@ -30,7 +30,7 @@
   "scripts": {
     "dev": "rollup --config rollup.config.js -w",
     "build": "cross-env NODE_ENV=production rollup -c",
-    "build:doc": "typedoc",
+    "build:doc": "typedoc --watch",
     "test": "cross-env NODE_ENV=test && jest -o --collectCoverage",
     "test:all": "cross-env NODE_ENV=test && jest --collectCoverage",
     "eslint": "eslint --fix --ext .ts src/ __test__/",
@@ -74,7 +74,8 @@
     "eslint-plugin-n": "^15.0.0",
     "eslint-plugin-promise": "^6.0.0",
     "husky": "^8.0.3",
-    "jest": "^29.3.1",
+    "jest": "^29.6.2",
+    "jest-environment-jsdom": "^29.6.2",
     "jsdoc": "^4.0.2",
     "lint-staged": "^13.1.0",
     "prettier": "^2.8.3",
